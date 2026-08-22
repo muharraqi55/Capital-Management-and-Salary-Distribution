@@ -1,16 +1,41 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>معرض الصور والفيديوهات</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>معرض الوسائط المتقدم</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <h1>🖼️ معرض الصور والفيديوهات</h1>
-    
-    <div class="gallery" id="gallery">
-        <!-- سيتم إضافة المحتوى بواسطة JavaScript -->
+    <!-- شريط العلوي -->
+    <header>
+        <h1>📸 معرض الصور والفيديوهات</h1>
+        <div class="controls">
+            <button id="playBtn">⏸️ إيقاف</button>
+            <button id="prevBtn">⏪ السابق</button>
+            <button id="nextBtn">التالي ⏩</button>
+            <span id="counter">1 / 10</span>
+        </div>
+    </header>
+
+    <!-- منطقة العرض الرئيسية -->
+    <div class="slider-container">
+        <div class="slider" id="slider">
+            <!-- سيتم إضافة المحتوى بواسطة JavaScript -->
+        </div>
+        
+        <!-- أزرار التنقل الجانبية -->
+        <button class="nav-btn left" id="leftNav">❮</button>
+        <button class="nav-btn right" id="rightNav">❯</button>
+        
+        <!-- نقاط التقدم -->
+        <div class="dots" id="dots"></div>
+    </div>
+
+    <!-- نافذة الزوم (تكبير الصورة) -->
+    <div class="modal" id="modal">
+        <span class="close-modal" id="closeModal">&times;</span>
+        <img id="modalImage" src="" alt="صورة مكبرة" />
     </div>
 
     <script src="script.js"></script>
