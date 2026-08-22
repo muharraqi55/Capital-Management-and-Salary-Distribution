@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // ============================================
-    // 0. إعدادات الثيم وحجم الخط (مصححة ومضمونة)
+    // 0. إعدادات الثيم وحجم الخط (مصححة)
     // ============================================
     const themeToggleBtn = document.getElementById('themeToggle');
     const fontIncreaseBtn = document.getElementById('fontIncrease');
@@ -27,13 +27,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2. منطق تكبير وتصغير الخط
+    // 2. منطق تكبير وتصغير الخط (الإصلاح هنا)
     let currentFontSize = parseInt(localStorage.getItem('fontSize')) || 16;
     const minFontSize = 12;
     const maxFontSize = 24;
 
     function updateFontSize() {
-        document.documentElement.style.setProperty('--base-font-size', `${currentFontSize}px`);
+        // التغيير على documentElement (html) وليس body
+        document.documentElement.style.fontSize = `${currentFontSize}px`;
         localStorage.setItem('fontSize', currentFontSize);
     }
     
@@ -67,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalVideo = document.getElementById('modalVideo');
     const closeModal = document.getElementById('closeModal');
 
-    // جعل الدوال متاحة عالمياً (Global) لتعمل مع أحداث onclick في HTML
     window.openModal = function(src, type) {
         if (!modal) return;
         modal.style.display = 'flex';
