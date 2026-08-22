@@ -4,7 +4,284 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>معرض الصور والفيديوهات</title>
-    <link rel="stylesheet" href="style.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #f093fb, #f5576c, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gallery-section {
+            margin-bottom: 50px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .gallery-section h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: #ddd;
+        }
+
+        .slider-wrapper {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+            background: #0a0a0a;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+            z-index: 10;
+            position: relative;
+        }
+
+        .controls button {
+            padding: 6px 16px;
+            border: none;
+            border-radius: 20px;
+            background: #4ecdc4;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .controls button:hover {
+            background: #f5576c;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .controls button.play-btn {
+            background: linear-gradient(135deg, #f5576c, #f093fb);
+            color: #fff;
+        }
+
+        .controls .counter {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            background: #0a0a0a;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.8s ease-in-out, visibility 0s linear 0.8s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0a0a0a;
+            z-index: 1;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transition: opacity 0.8s ease-in-out, visibility 0s linear 0s;
+            z-index: 2;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            cursor: zoom-in;
+        }
+
+        .slide .slide-title {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            border: none;
+            padding: 14px 12px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+            z-index: 10;
+        }
+
+        .nav-btn:hover {
+            background: rgba(78, 205, 196, 0.7);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .nav-btn.left { left: 10px; }
+        .nav-btn.right { right: 10px; }
+
+        .dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 0;
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            cursor: pointer;
+            transition: 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .dot.active {
+            background: #4ecdc4;
+            border-color: #fff;
+            transform: scale(1.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+            backdrop-filter: blur(10px);
+            padding: 20px;
+        }
+
+        .modal-content {
+            position: relative;
+            width: 95%;
+            max-width: 1200px;
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal img,
+        .modal iframe {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 10px;
+            box-shadow: 0 0 60px rgba(78, 205, 196, 0.2);
+        }
+
+        .modal iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 2.5rem;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 1001;
+        }
+
+        .close-modal:hover {
+            color: #f5576c;
+            transform: rotate(90deg);
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            header h1 { font-size: 1.8rem; }
+            .gallery-section { padding: 10px; margin-bottom: 30px; }
+            .gallery-section h2 { font-size: 1.3rem; }
+            .slider-container { height: 280px; }
+            .controls { padding: 8px 12px; gap: 6px; }
+            .controls button { padding: 4px 10px; font-size: 0.7rem; }
+            .controls .counter { font-size: 0.7rem; padding: 3px 10px; }
+            .nav-btn { padding: 10px 8px; font-size: 1.2rem; }
+            .slide .slide-title { font-size: 0.75rem; padding: 5px 15px; bottom: 15px; white-space: normal; }
+            .dots { gap: 6px; padding: 8px 0; }
+            .dot { width: 8px; height: 8px; }
+            .modal-content { height: 80vh; }
+            .close-modal { font-size: 2rem; top: 10px; right: 20px; }
+        }
+
+        @media (max-width: 480px) {
+            .slider-container { height: 200px; }
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -15,24 +292,17 @@
     <section class="gallery-section">
         <h2>🖼️ ألبوم الصور</h2>
         <div class="slider-wrapper">
-            <!-- شريط التحكم العلوي للصور -->
-            <div class="controls" id="imageControls">
-                <button id="imagePlayBtn">⏸️ إيقاف</button>
+            <div class="controls">
+                <button class="play-btn" id="imagePlayBtn">⏸️ إيقاف</button>
                 <button id="imagePrevBtn">⏪ السابق</button>
                 <button id="imageNextBtn">التالي ⏩</button>
-                <span id="imageCounter">1 / 6</span>
+                <span class="counter" id="imageCounter">1 / 6</span>
             </div>
-
-            <!-- أزرار التنقل الجانبية للصور -->
             <button class="nav-btn left" id="imageLeftNav">❮</button>
             <button class="nav-btn right" id="imageRightNav">❯</button>
-
-            <!-- حاوية الشرائح للصور -->
             <div class="slider-container" id="imageSliderContainer">
                 <div id="imageSlidesContainer"></div>
             </div>
-
-            <!-- نقاط التقدم للصور -->
             <div class="dots" id="imageDotsContainer"></div>
         </div>
     </section>
@@ -41,36 +311,265 @@
     <section class="gallery-section">
         <h2>🎬 ألبوم فيديوهات YouTube</h2>
         <div class="slider-wrapper">
-            <!-- شريط التحكم العلوي للفيديوهات -->
-            <div class="controls" id="videoControls">
+            <div class="controls">
                 <button id="videoPrevBtn">⏪ السابق</button>
                 <button id="videoNextBtn">التالي ⏩</button>
-                <span id="videoCounter">1 / 2</span>
+                <span class="counter" id="videoCounter">1 / 2</span>
             </div>
-
-            <!-- أزرار التنقل الجانبية للفيديوهات -->
             <button class="nav-btn left" id="videoLeftNav">❮</button>
             <button class="nav-btn right" id="videoRightNav">❯</button>
-
-            <!-- حاوية الشرائح للفيديوهات -->
             <div class="slider-container" id="videoSliderContainer">
                 <div id="videoSlidesContainer"></div>
             </div>
-
-            <!-- نقاط التقدم للفيديوهات -->
             <div class="dots" id="videoDotsContainer"></div>
         </div>
     </section>
 
-    <!-- ===== نافذة التكبير الموحدة ===== -->
+    <!-- ===== نافذة التكبير ===== -->
     <div class="modal" id="modal">
         <span class="close-modal" id="closeModal">&times;</span>
         <div class="modal-content">
-            <img id="modalImage" src="" alt="صورة مكبرة" />
-            <iframe id="modalVideo" src="" allowfullscreen></iframe>
+            <img id="modalImage" src="" alt="صورة مكبرة" style="display:none;" />
+            <iframe id="modalVideo" src="" allowfullscreen style="display:none;"></iframe>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // ============================================
+        // البيانات
+        // ============================================
+        const imageItems = [
+            { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/1.png', title: 'منظر طبيعي 1' },
+            { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/2.png', title: 'منظر طبيعي 2' },
+            { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/3.png', title: 'منظر طبيعي 3' },
+            { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/4.png', title: 'منظر طبيعي 4' },
+            { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/5.png', title: 'منظر طبيعي 5' },
+            { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/6.png', title: 'منظر طبيعي 6' },
+        ];
+
+        const videoItems = [
+            { videoId: 'y4ETb8WrcuQ', title: 'الطريق الممل الذي يصنع الثروة الحقيقية' },
+            { videoId: 'IttOZGG69mo', title: 'أسرار صيانة شواحن شور' },
+        ];
+
+        // ============================================
+        // نافذة التكبير
+        // ============================================
+        const modal = document.getElementById('modal');
+        const modalImage = document.getElementById('modalImage');
+        const modalVideo = document.getElementById('modalVideo');
+        const closeModal = document.getElementById('closeModal');
+
+        function openModal(src, type) {
+            modal.style.display = 'flex';
+            if (type === 'image') {
+                modalImage.style.display = 'block';
+                modalVideo.style.display = 'none';
+                modalVideo.src = '';
+                modalImage.src = src;
+            } else {
+                modalImage.style.display = 'none';
+                modalVideo.style.display = 'block';
+                modalImage.src = '';
+                // إضافة referrerpolicy لمنع خطأ 153
+                modalVideo.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+                modalVideo.src = `https://www.youtube.com/embed/${src}?autoplay=1&rel=0&controls=1`;
+            }
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModalFunc() {
+            modal.style.display = 'none';
+            modalImage.src = '';
+            modalVideo.src = '';
+            document.body.style.overflow = 'auto';
+        }
+
+        closeModal.addEventListener('click', closeModalFunc);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModalFunc();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModalFunc();
+        });
+
+        // ============================================
+        // دوال التكبير
+        // ============================================
+        function zoomImage(element) {
+            const src = element.getAttribute('data-src') || element.src;
+            openModal(src, 'image');
+        }
+
+        function zoomVideo(videoId) {
+            if (videoId) {
+                openModal(videoId, 'video');
+            }
+        }
+
+        window.zoomImage = zoomImage;
+        window.zoomVideo = zoomVideo;
+
+        // ============================================
+        // دالة إنشاء سلايدر
+        // ============================================
+        function createSlider({
+            items,
+            containerId,
+            dotsId,
+            counterId,
+            playBtnId = null,
+            prevBtnId,
+            nextBtnId,
+            leftNavId,
+            rightNavId,
+            isVideo = false,
+            autoPlay = true,
+        }) {
+            let currentIndex = 0;
+            let isPlaying = true;
+            let slideInterval = null;
+            const DELAY = 5000;
+
+            const container = document.getElementById(containerId);
+            const dotsContainer = document.getElementById(dotsId);
+            const counter = document.getElementById(counterId);
+            const playBtn = playBtnId ? document.getElementById(playBtnId) : null;
+            const prevBtn = document.getElementById(prevBtnId);
+            const nextBtn = document.getElementById(nextBtnId);
+            const leftNav = document.getElementById(leftNavId);
+            const rightNav = document.getElementById(rightNavId);
+
+            function renderSlides() {
+                container.innerHTML = items.map((item, index) => {
+                    let content = '';
+                    if (!isVideo) {
+                        content = `<img src="${item.src}" data-src="${item.src}" alt="${item.title}" data-index="${index}" class="slide-image" onclick="window.zoomImage(this)">`;
+                    } else {
+                        content = `
+                            <div class="video-click-wrapper" onclick="window.zoomVideo('${item.videoId}')" style="width: 100%; height: 100%; position: relative; cursor: zoom-in; display: flex; align-items: center; justify-content: center; background: #000;">
+                                <iframe 
+                                    src="https://www.youtube.com/embed/${item.videoId}?autoplay=0&rel=0&controls=1"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen
+                                    referrerpolicy="strict-origin-when-cross-origin"
+                                    style="pointer-events: none; width: 100%; height: 100%; border: none;"
+                                ></iframe>
+                                <div style="position: absolute; font-size: 3rem; color: rgba(255, 255, 255, 0.8); pointer-events: none; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">▶️</div>
+                            </div>
+                        `;
+                    }
+                    return `
+                        <div class="slide ${index === 0 ? 'active' : ''}" data-index="${index}">
+                            ${content}
+                            <div class="slide-title">${item.title}</div>
+                        </div>
+                    `;
+                }).join('');
+
+                dotsContainer.innerHTML = items.map((_, index) => `
+                    <span class="dot ${index === 0 ? 'active' : ''}" data-index="${index}"></span>
+                `).join('');
+
+                updateCounter();
+            }
+
+            function goToSlide(index) {
+                if (index < 0) index = items.length - 1;
+                if (index >= items.length) index = 0;
+
+                const slides = container.querySelectorAll('.slide');
+                const dots = dotsContainer.querySelectorAll('.dot');
+
+                slides.forEach(el => el.classList.remove('active'));
+                dots.forEach(el => el.classList.remove('active'));
+
+                if (slides[index]) slides[index].classList.add('active');
+                if (dots[index]) dots[index].classList.add('active');
+
+                currentIndex = index;
+                updateCounter();
+            }
+
+            function nextSlide() { goToSlide(currentIndex + 1); }
+            function prevSlide() { goToSlide(currentIndex - 1); }
+
+            function updateCounter() {
+                counter.textContent = `${currentIndex + 1} / ${items.length}`;
+            }
+
+            function startAutoPlay() {
+                if (!autoPlay || isVideo) return;
+                if (slideInterval) clearInterval(slideInterval);
+                if (isPlaying) {
+                    slideInterval = setInterval(nextSlide, DELAY);
+                }
+            }
+
+            function togglePlay() {
+                if (isVideo) return;
+                isPlaying = !isPlaying;
+                if (playBtn) {
+                    playBtn.textContent = isPlaying ? '⏸️ إيقاف' : '▶️ تشغيل';
+                }
+                startAutoPlay();
+            }
+
+            if (playBtn) playBtn.addEventListener('click', togglePlay);
+
+            [prevBtn, nextBtn, leftNav, rightNav].forEach(btn => {
+                btn.addEventListener('click', function() {
+                    clearInterval(slideInterval);
+                    if (this === prevBtn || this === leftNav) prevSlide();
+                    else nextSlide();
+                    startAutoPlay();
+                });
+            });
+
+            dotsContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('dot')) {
+                    clearInterval(slideInterval);
+                    goToSlide(parseInt(e.target.dataset.index));
+                    startAutoPlay();
+                }
+            });
+
+            renderSlides();
+            if (autoPlay && !isVideo) startAutoPlay();
+
+            return { goToSlide, nextSlide, prevSlide };
+        }
+
+        // ============================================
+        // إنشاء المعارض
+        // ============================================
+        createSlider({
+            items: imageItems,
+            containerId: 'imageSlidesContainer',
+            dotsId: 'imageDotsContainer',
+            counterId: 'imageCounter',
+            playBtnId: 'imagePlayBtn',
+            prevBtnId: 'imagePrevBtn',
+            nextBtnId: 'imageNextBtn',
+            leftNavId: 'imageLeftNav',
+            rightNavId: 'imageRightNav',
+            isVideo: false,
+            autoPlay: true,
+        });
+
+        createSlider({
+            items: videoItems,
+            containerId: 'videoSlidesContainer',
+            dotsId: 'videoDotsContainer',
+            counterId: 'videoCounter',
+            prevBtnId: 'videoPrevBtn',
+            nextBtnId: 'videoNextBtn',
+            leftNavId: 'videoLeftNav',
+            rightNavId: 'videoRightNav',
+            isVideo: true,
+            autoPlay: false,
+        });
+    </script>
 </body>
 </html>
