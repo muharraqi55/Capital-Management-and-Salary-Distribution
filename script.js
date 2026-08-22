@@ -22,7 +22,7 @@ const mediaFiles = [
     // ===== الفيديوهات =====
     { 
         type: 'video', 
-        src: 'assets/videos/video1.mp4', 
+        src: 'assets/videos/1.mp4', 
         title: 'فيديو تعليمي 1' 
     },
     { 
