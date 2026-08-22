@@ -1,5 +1,5 @@
 // ============================================
-// 1. البيانات (يمكنك تعديل الروابط هنا بسهولة)
+// 1. البيانات (أضف مسارات ملفاتك المحلية هنا)
 // ============================================
 const imageItems = [
     { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/1.png', title: 'منظر طبيعي 1' },
@@ -8,51 +8,59 @@ const imageItems = [
     { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/4.png', title: 'منظر طبيعي 4' },
     { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/5.png', title: 'منظر طبيعي 5' },
     { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/6.png', title: 'منظر طبيعي 6' },
+    { src: 'assets/images/6.png', title: 'منظر طبيعي 6' },
 ];
 
 const videoItems = [
-    { videoId: 'y4ETb8WrcuQ', title: 'فيديو يوتيوب 1' },
-    { videoId: 'IttOZGG69mo', title: 'فيديو يوتيوب 2' },
+    // فيديو يوتيوب
+    { type: 'youtube', videoId: 'y4ETb8WrcuQ', title: 'فيديو يوتيوب 1' },
+    { type: 'youtube', videoId: 'IttOZGG69mo', title: 'فيديو يوتيوب 2' },
+    
+    // 👇 أضف فيديوهات MP4 محلية هنا (تأكد من صحة المسار)
+    { type: 'mp4', mp4Src: 'assets/videos/2.mp4', title: 'فيديو محلي 1' },
+    // { type: 'mp4', mp4Src: 'assets/video2.mp4', title: 'فيديو محلي 2' },
 ];
 
 // ============================================
-// 2. دوال التكبير (متاحة عالمياً عبر window)
+// 2. دوال التكبير الموحدة
 // ============================================
-function zoomImage(element) {
-    const src = element.getAttribute('data-src') || element.src;
-    openModal(src, 'image');
+function zoomMedia(src, type) {
+    openModal(src, type);
 }
 
-function zoomVideo(videoId) {
-    if (videoId) {
-        openModal(videoId, 'video');
-    }
-}
-
-// ربط الدوال بـ window لتعمل مع onclick في HTML
-window.zoomImage = zoomImage;
-window.zoomVideo = zoomVideo;
+// ربط الدالة بـ window لتعمل مع onclick في HTML
+window.zoomMedia = zoomMedia;
 
 // ============================================
-// 3. منطق الصفحة (يتم تنفيذه بعد تحميل HTML)
+// 3. منطق الصفحة
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('modal');
     const modalImage = document.getElementById('modalImage');
+    const modalMp4 = document.getElementById('modalMp4');
     const modalVideo = document.getElementById('modalVideo');
     const closeModal = document.getElementById('closeModal');
 
     function openModal(src, type) {
         modal.style.display = 'flex';
+        
+        // إعادة تعيين جميع العناصر
+        modalImage.style.display = 'none';
+        modalMp4.style.display = 'none';
+        modalVideo.style.display = 'none';
+        modalImage.src = '';
+        modalMp4.src = '';
+        modalVideo.src = '';
+
         if (type === 'image') {
             modalImage.style.display = 'block';
-            modalVideo.style.display = 'none';
-            modalVideo.src = '';
             modalImage.src = src;
-        } else {
-            modalImage.style.display = 'none';
+        } else if (type === 'mp4') {
+            modalMp4.style.display = 'block';
+            modalMp4.src = src;
+            modalMp4.play(); // تشغيل تلقائي عند التكبير
+        } else if (type === 'youtube') {
             modalVideo.style.display = 'block';
-            modalImage.src = '';
             modalVideo.src = `https://www.youtube.com/embed/${src}?autoplay=1&rel=0&controls=1`;
         }
         document.body.style.overflow = 'hidden';
@@ -61,6 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function closeModalFunc() {
         modal.style.display = 'none';
         modalImage.src = '';
+        modalMp4.pause(); // إيقاف الفيديو المحلي عند الإغلاق
+        modalMp4.src = '';
         modalVideo.src = '';
         document.body.style.overflow = 'auto';
     }
@@ -69,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.addEventListener('click', (e) => {
         if (e.target === modal) closeModalFunc();
     });
-
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeModalFunc();
     });
@@ -99,19 +108,25 @@ document.addEventListener('DOMContentLoaded', () => {
             container.innerHTML = items.map((item, index) => {
                 let content = '';
                 if (!isVideo) {
-                    content = `<img src="${item.src}" data-src="${item.src}" alt="${item.title}" data-index="${index}" class="slide-image" onclick="window.zoomImage(this)">`;
+                    content = `<img src="${item.src}" data-src="${item.src}" alt="${item.title}" data-index="${index}" class="slide-image" onclick="window.zoomMedia('${item.src}', 'image')">`;
                 } else {
-                    content = `
-                        <div class="video-click-wrapper" onclick="window.zoomVideo('${item.videoId}')" style="width: 100%; height: 100%; position: relative; cursor: zoom-in; display: flex; align-items: center; justify-content: center; background: #000;">
-                            <iframe 
-                                src="https://www.youtube.com/embed/${item.videoId}?autoplay=0&rel=0&controls=1"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen
-                                style="pointer-events: none; width: 100%; height: 100%; border: none;"
-                            ></iframe>
-                            <div style="position: absolute; font-size: 3rem; color: rgba(255, 255, 255, 0.8); pointer-events: none; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">▶️</div>
-                        </div>
-                    `;
+                    if (item.type === 'mp4') {
+                        // عرض فيديو MP4 محلي
+                        content = `
+                            <div class="video-click-wrapper" onclick="window.zoomMedia('${item.mp4Src}', 'mp4')" style="width: 100%; height: 100%; position: relative; cursor: zoom-in; display: flex; align-items: center; justify-content: center; background: #000;">
+                                <video src="${item.mp4Src}" style="pointer-events: none; width: 100%; height: 100%; object-fit: contain;"></video>
+                                <div style="position: absolute; font-size: 3rem; color: rgba(255, 255, 255, 0.8); pointer-events: none; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">▶️</div>
+                            </div>
+                        `;
+                    } else {
+                        // عرض فيديو يوتيوب
+                        content = `
+                            <div class="video-click-wrapper" onclick="window.zoomMedia('${item.videoId}', 'youtube')" style="width: 100%; height: 100%; position: relative; cursor: zoom-in; display: flex; align-items: center; justify-content: center; background: #000;">
+                                <iframe src="https://www.youtube.com/embed/${item.videoId}?autoplay=0&rel=0&controls=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="pointer-events: none; width: 100%; height: 100%; border: none;"></iframe>
+                                <div style="position: absolute; font-size: 3rem; color: rgba(255, 255, 255, 0.8); pointer-events: none; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">▶️</div>
+                            </div>
+                        `;
+                    }
                 }
                 return `
                     <div class="slide ${index === 0 ? 'active' : ''}" data-index="${index}">
@@ -131,46 +146,34 @@ document.addEventListener('DOMContentLoaded', () => {
         function goToSlide(index) {
             if (index < 0) index = items.length - 1;
             if (index >= items.length) index = 0;
-
             const slides = container.querySelectorAll('.slide');
             const dots = dotsContainer.querySelectorAll('.dot');
-
             slides.forEach(el => el.classList.remove('active'));
             dots.forEach(el => el.classList.remove('active'));
-
             if (slides[index]) slides[index].classList.add('active');
             if (dots[index]) dots[index].classList.add('active');
-
             currentIndex = index;
             updateCounter();
         }
 
         function nextSlide() { goToSlide(currentIndex + 1); }
         function prevSlide() { goToSlide(currentIndex - 1); }
-
-        function updateCounter() {
-            counter.textContent = `${currentIndex + 1} / ${items.length}`;
-        }
+        function updateCounter() { counter.textContent = `${currentIndex + 1} / ${items.length}`; }
 
         function startAutoPlay() {
             if (!autoPlay || isVideo) return;
             if (slideInterval) clearInterval(slideInterval);
-            if (isPlaying) {
-                slideInterval = setInterval(nextSlide, DELAY);
-            }
+            if (isPlaying) slideInterval = setInterval(nextSlide, DELAY);
         }
 
         function togglePlay() {
             if (isVideo) return;
             isPlaying = !isPlaying;
-            if (playBtn) {
-                playBtn.textContent = isPlaying ? '⏸️ إيقاف' : '▶️ تشغيل';
-            }
+            if (playBtn) playBtn.textContent = isPlaying ? '⏸️ إيقاف' : '▶️ تشغيل';
             startAutoPlay();
         }
 
         if (playBtn) playBtn.addEventListener('click', togglePlay);
-
         [prevBtn, nextBtn, leftNav, rightNav].forEach(btn => {
             btn.addEventListener('click', function() {
                 clearInterval(slideInterval);
@@ -179,7 +182,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 startAutoPlay();
             });
         });
-
         dotsContainer.addEventListener('click', function(e) {
             if (e.target.classList.contains('dot')) {
                 clearInterval(slideInterval);
@@ -190,7 +192,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         renderSlides();
         if (autoPlay && !isVideo) startAutoPlay();
-
         return { goToSlide, nextSlide, prevSlide };
     }
 
@@ -198,29 +199,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // 5. تشغيل المعارض
     // ============================================
     createSlider({
-        items: imageItems,
-        containerId: 'imageSlidesContainer',
-        dotsId: 'imageDotsContainer',
-        counterId: 'imageCounter',
-        playBtnId: 'imagePlayBtn',
-        prevBtnId: 'imagePrevBtn',
-        nextBtnId: 'imageNextBtn',
-        leftNavId: 'imageLeftNav',
-        rightNavId: 'imageRightNav',
-        isVideo: false,
-        autoPlay: true,
+        items: imageItems, containerId: 'imageSlidesContainer', dotsId: 'imageDotsContainer',
+        counterId: 'imageCounter', playBtnId: 'imagePlayBtn', prevBtnId: 'imagePrevBtn',
+        nextBtnId: 'imageNextBtn', leftNavId: 'imageLeftNav', rightNavId: 'imageRightNav',
+        isVideo: false, autoPlay: true,
     });
 
     createSlider({
-        items: videoItems,
-        containerId: 'videoSlidesContainer',
-        dotsId: 'videoDotsContainer',
-        counterId: 'videoCounter',
-        prevBtnId: 'videoPrevBtn',
-        nextBtnId: 'videoNextBtn',
-        leftNavId: 'videoLeftNav',
-        rightNavId: 'videoRightNav',
-        isVideo: true,
-        autoPlay: false,
+        items: videoItems, containerId: 'videoSlidesContainer', dotsId: 'videoDotsContainer',
+        counterId: 'videoCounter', prevBtnId: 'videoPrevBtn', nextBtnId: 'videoNextBtn',
+        leftNavId: 'videoLeftNav', rightNavId: 'videoRightNav',
+        isVideo: true, autoPlay: false,
     });
 });
