@@ -1,37 +1,37 @@
 // ============================================
-// قائمة الوسائط - أضف صورك وفيديوهاتك هنا
+// قائمة الوسائط - جميع صورك موجودة هنا
 // ============================================
 const mediaItems = [
-    // ===== الصور =====
+    // ===== جميع الصور =====
     {
         type: 'image',
         src: 'assets/images/1.png',
-        title: 'منظر طبيعي خلاب',
+        title: 'صورة 1',
     },
     {
         type: 'image',
         src: 'assets/images/2.png',
-        title: 'تصميم جرافيكي رائع',
+        title: 'صورة 2',
     },
     {
         type: 'image',
         src: 'assets/images/3.png',
-        title: 'صورة شخصية جميلة',
+        title: 'صورة 3',
     },
     {
         type: 'image',
         src: 'assets/images/4.png',
-        title: 'صورة رائعة 4',
+        title: 'صورة 4',
     },
     {
         type: 'image',
         src: 'assets/images/5.png',
-        title: 'صورة رائعة 5',
+        title: 'صورة 5',
     },
     {
         type: 'image',
         src: 'assets/images/6.png',
-        title: 'صورة رائعة 6',
+        title: 'صورة 6',
     },
     
     // ===== فيديوهات YouTube =====
@@ -55,12 +55,12 @@ const mediaItems = [
 ];
 
 // ============================================
-// المتغيرات الأساسية
+// باقي الكود (نفسه كما هو)
 // ============================================
 let currentIndex = 0;
 let isPlaying = true;
 let slideInterval = null;
-const SLIDE_DELAY = 5000; // 5 ثواني
+const SLIDE_DELAY = 5000;
 
 const slider = document.getElementById('slider');
 const dotsContainer = document.getElementById('dots');
@@ -74,16 +74,13 @@ const modal = document.getElementById('modal');
 const modalImage = document.getElementById('modalImage');
 const closeModal = document.getElementById('closeModal');
 
-// ============================================
-// عرض الوسائط
-// ============================================
 function renderSlides() {
     slider.innerHTML = mediaItems.map((item, index) => {
         let content = '';
         let typeLabel = '';
         
         if (item.type === 'image') {
-            content = `<img src="${item.src}" alt="${item.title}" data-index="${index}" class="slide-image">`;
+            content = `<img src="${item.src}" alt="${item.title}" data-index="${index}" class="slide-image" onerror="this.style.display='none'">`;
             typeLabel = '🖼️ صورة';
         } else if (item.type === 'youtube') {
             content = `
@@ -115,18 +112,13 @@ function renderSlides() {
         `;
     }).join('');
     
-    // إضافة نقاط التقدم
     dotsContainer.innerHTML = mediaItems.map((_, index) => `
         <span class="dot ${index === 0 ? 'active' : ''}" data-index="${index}"></span>
     `).join('');
     
-    // تحديث العداد
     updateCounter();
 }
 
-// ============================================
-// تحديث العرض
-// ============================================
 function goToSlide(index) {
     if (index < 0) index = mediaItems.length - 1;
     if (index >= mediaItems.length) index = 0;
@@ -135,7 +127,6 @@ function goToSlide(index) {
     const offset = -index * 100;
     slider.style.transform = `translateX(${offset}%)`;
     
-    // تحديث النقاط
     document.querySelectorAll('.dot').forEach((dot, i) => {
         dot.classList.toggle('active', i === index);
     });
@@ -155,9 +146,6 @@ function updateCounter() {
     counter.textContent = `${currentIndex + 1} / ${mediaItems.length}`;
 }
 
-// ============================================
-// التحكم في التشغيل التلقائي
-// ============================================
 function startAutoPlay() {
     if (slideInterval) clearInterval(slideInterval);
     if (isPlaying) {
@@ -175,9 +163,6 @@ function togglePlay() {
     }
 }
 
-// ============================================
-// فتح نافذة الزوم (للكبس على الصورة)
-// ============================================
 function openModal(src) {
     modal.style.display = 'flex';
     modalImage.src = src;
@@ -189,17 +174,12 @@ function closeModalFunc() {
     document.body.style.overflow = 'auto';
 }
 
-// ============================================
-// الأحداث (Event Listeners)
-// ============================================
-// أزرار التحكم
 playBtn.addEventListener('click', togglePlay);
 prevBtn.addEventListener('click', () => { clearInterval(slideInterval); prevSlide(); startAutoPlay(); });
 nextBtn.addEventListener('click', () => { clearInterval(slideInterval); nextSlide(); startAutoPlay(); });
 leftNav.addEventListener('click', () => { clearInterval(slideInterval); prevSlide(); startAutoPlay(); });
 rightNav.addEventListener('click', () => { clearInterval(slideInterval); nextSlide(); startAutoPlay(); });
 
-// النقاط
 dotsContainer.addEventListener('click', (e) => {
     if (e.target.classList.contains('dot')) {
         clearInterval(slideInterval);
@@ -209,7 +189,6 @@ dotsContainer.addEventListener('click', (e) => {
     }
 });
 
-// الزوم عند النقر على الصورة
 slider.addEventListener('click', (e) => {
     const img = e.target.closest('.slide-image');
     if (img) {
@@ -217,13 +196,11 @@ slider.addEventListener('click', (e) => {
     }
 });
 
-// إغلاق الزوم
 closeModal.addEventListener('click', closeModalFunc);
 modal.addEventListener('click', (e) => {
     if (e.target === modal) closeModalFunc();
 });
 
-// Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight') { clearInterval(slideInterval); nextSlide(); startAutoPlay(); }
     if (e.key === 'ArrowLeft') { clearInterval(slideInterval); prevSlide(); startAutoPlay(); }
@@ -231,13 +208,9 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && modal.style.display === 'flex') closeModalFunc();
 });
 
-// ============================================
-// بدء التشغيل
-// ============================================
 renderSlides();
 startAutoPlay();
 
-// عرض مساعدة في الكونسول
 console.log('✅ معرض الوسائط يعمل!');
 console.log(`📊 عدد العناصر: ${mediaItems.length}`);
 console.log('⌨️ اختصارات لوحة المفاتيح:');
