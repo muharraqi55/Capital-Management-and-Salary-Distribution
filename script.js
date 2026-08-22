@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     const videoItems = [
-        { type: 'youtube', videoId: 'y4ETb8WrcuQ', title: 'فيديو يوتيوب 1' },
+        { type: 'youtube', videoId: '2FGF2_16Tgg', title: 'فيديو يوتيوب 1' },
        // { type: 'youtube', videoId: 'IttOZGG69mo', title: 'فيديو يوتيوب 2' },
         // { type: 'mp4', mp4Src: 'assets/videos/2.mp4', title: 'فيديو محلي 1' },
     ];
