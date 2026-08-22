@@ -5,7 +5,7 @@ const mediaFiles = [
     // ===== الصور =====
     { 
         type: 'image', 
-        src: 'assets/images/photo1.jpg', 
+        src: 'assets/images/1.png', 
         title: 'منظر طبيعي جميل' 
     },
     { 
