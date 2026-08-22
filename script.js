@@ -1,108 +1,232 @@
 // ============================================
-// قائمة الملفات الثابتة - عدل هنا حسب ملفاتك
+// قائمة الوسائط - أضف صورك وفيديوهاتك هنا
 // ============================================
-const mediaFiles = [
+const mediaItems = [
     // ===== الصور =====
-    { 
-        type: 'image', 
-        src: 'assets/images/1.png', 
-        title: 'منظر طبيعي جميل' 
+    {
+        type: 'image',
+        src: 'assets/images/1.png',
+        title: 'منظر طبيعي خلاب',
     },
-    { 
-        type: 'image', 
-        src: 'assets/images/photo2.png', 
-        title: 'تصميم جرافيكي' 
+    {
+        type: 'image',
+        src: 'assets/images/2.png',
+        title: 'تصميم جرافيكي رائع',
     },
-    { 
-        type: 'image', 
-        src: 'assets/images/photo3.jpg', 
-        title: 'صورة شخصية' 
+    {
+        type: 'image',
+        src: 'assets/images/photo3.jpg',
+        title: 'صورة شخصية جميلة',
     },
     
-    // ===== الفيديوهات =====
-    { 
-        type: 'video', 
-        src: 'assets/videos/2.mp4', 
-        title: 'فيديو تعليمي 1' 
+    // ===== فيديوهات YouTube =====
+    {
+        type: 'youtube',
+        videoId: 'y4ETb8WrcuQ',  // ضع ID فيديو YouTube هنا
+        title: 'فيديو ممتع على YouTube',
     },
-    { 
-        type: 'video', 
-        src: 'assets/videos/video2.mp4', 
-        title: 'فيديو ممتع' 
+    {
+        type: 'youtube',
+        videoId: '9bZkp7q19f0',  // مثال: PSY - Gangnam Style
+        title: 'فيديو رائع آخر',
     },
+    
+    // ===== فيديوهات محلية (اختياري) =====
+    {
+         type: 'video',
+         src: 'assets/videos/2.mp4',
+         title: 'فيديو محلي',
+     },
 ];
 
 // ============================================
-// عرض الملفات في المعرض
+// المتغيرات الأساسية
 // ============================================
-const gallery = document.getElementById('gallery');
+let currentIndex = 0;
+let isPlaying = true;
+let slideInterval = null;
+const SLIDE_DELAY = 5000; // 5 ثواني
 
-function displayMedia() {
-    // التحقق إذا كانت القائمة فارغة
-    if (mediaFiles.length === 0) {
-        gallery.innerHTML = `
-            <div class="no-media">
-                <span>📂</span>
-                لا توجد صور أو فيديوهات<br>
-                <small style="color: #555;">أضف ملفاتك في مجلد assets</small>
-            </div>
-        `;
-        return;
-    }
+const slider = document.getElementById('slider');
+const dotsContainer = document.getElementById('dots');
+const counter = document.getElementById('counter');
+const playBtn = document.getElementById('playBtn');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const leftNav = document.getElementById('leftNav');
+const rightNav = document.getElementById('rightNav');
+const modal = document.getElementById('modal');
+const modalImage = document.getElementById('modalImage');
+const closeModal = document.getElementById('closeModal');
 
-    // إنشاء عناصر المعرض
-    gallery.innerHTML = mediaFiles.map((item, index) => {
-        // تحديد نوع الملف
-        const isVideo = item.type === 'video';
+// ============================================
+// عرض الوسائط
+// ============================================
+function renderSlides() {
+    slider.innerHTML = mediaItems.map((item, index) => {
+        let content = '';
+        let typeLabel = '';
         
-        // إنشاء العنصر
+        if (item.type === 'image') {
+            content = `<img src="${item.src}" alt="${item.title}" data-index="${index}" class="slide-image">`;
+            typeLabel = '🖼️ صورة';
+        } else if (item.type === 'youtube') {
+            content = `
+                <iframe 
+                    src="https://www.youtube.com/embed/${item.videoId}?autoplay=0&rel=0&controls=1&loop=1&playlist=${item.videoId}"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                    style="width: 100%; height: 100%;"
+                ></iframe>
+            `;
+            typeLabel = '🎬 YouTube';
+        } else if (item.type === 'video') {
+            content = `
+                <video controls autoplay muted loop>
+                    <source src="${item.src}" type="video/mp4">
+                    متصفحك لا يدعم الفيديو
+                </video>
+            `;
+            typeLabel = '🎥 فيديو';
+        }
+        
         return `
-            <div class="item" data-index="${index}">
-                ${isVideo 
-                    ? `<video controls preload="metadata">
-                        <source src="${item.src}" type="video/mp4">
-                        <source src="${item.src}" type="video/webm">
-                        متصفحك لا يدعم تشغيل الفيديو
-                       </video>`
-                    : `<img src="${item.src}" alt="${item.title}" loading="lazy">`
-                }
-                <div class="caption">
-                    📌 ${item.title}
-                    ${isVideo ? ' 🎬' : ' 🖼️'}
-                </div>
+            <div class="slide" data-index="${index}">
+                ${content}
+                <span class="slide-type">${typeLabel}</span>
+                <div class="slide-title">${item.title}</div>
             </div>
         `;
     }).join('');
-
-    // إضافة رسالة في الكونسول للمساعدة
-    console.log(`✅ تم عرض ${mediaFiles.length} ملف بنجاح`);
-    console.log(`📸 صور: ${mediaFiles.filter(f => f.type === 'image').length}`);
-    console.log(`🎬 فيديوهات: ${mediaFiles.filter(f => f.type === 'video').length}`);
+    
+    // إضافة نقاط التقدم
+    dotsContainer.innerHTML = mediaItems.map((_, index) => `
+        <span class="dot ${index === 0 ? 'active' : ''}" data-index="${index}"></span>
+    `).join('');
+    
+    // تحديث العداد
+    updateCounter();
 }
 
 // ============================================
-// تشغيل العرض عند تحميل الصفحة
+// تحديث العرض
 // ============================================
-document.addEventListener('DOMContentLoaded', displayMedia);
+function goToSlide(index) {
+    if (index < 0) index = mediaItems.length - 1;
+    if (index >= mediaItems.length) index = 0;
+    
+    currentIndex = index;
+    const offset = -index * 100;
+    slider.style.transform = `translateX(${offset}%)`;
+    
+    // تحديث النقاط
+    document.querySelectorAll('.dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+    });
+    
+    updateCounter();
+}
+
+function nextSlide() {
+    goToSlide(currentIndex + 1);
+}
+
+function prevSlide() {
+    goToSlide(currentIndex - 1);
+}
+
+function updateCounter() {
+    counter.textContent = `${currentIndex + 1} / ${mediaItems.length}`;
+}
 
 // ============================================
-// (اختياري) عرض رسالة خطأ إذا فشل تحميل الصور
+// التحكم في التشغيل التلقائي
 // ============================================
-window.addEventListener('error', function(e) {
-    if (e.target.tagName === 'IMG') {
-        e.target.style.display = 'none';
-        const parent = e.target.parentElement;
-        const errorMsg = document.createElement('div');
-        errorMsg.style.cssText = `
-            height: 220px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #111;
-            color: #666;
-            font-size: 0.9rem;
-        `;
-        errorMsg.textContent = '❌ تعذر تحميل الصورة';
-        parent.insertBefore(errorMsg, e.target);
+function startAutoPlay() {
+    if (slideInterval) clearInterval(slideInterval);
+    if (isPlaying) {
+        slideInterval = setInterval(nextSlide, SLIDE_DELAY);
     }
-}, true);
+}
+
+function togglePlay() {
+    isPlaying = !isPlaying;
+    playBtn.textContent = isPlaying ? '⏸️ إيقاف' : '▶️ تشغيل';
+    if (isPlaying) {
+        startAutoPlay();
+    } else {
+        clearInterval(slideInterval);
+    }
+}
+
+// ============================================
+// فتح نافذة الزوم (للكبس على الصورة)
+// ============================================
+function openModal(src) {
+    modal.style.display = 'flex';
+    modalImage.src = src;
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModalFunc() {
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// ============================================
+// الأحداث (Event Listeners)
+// ============================================
+// أزرار التحكم
+playBtn.addEventListener('click', togglePlay);
+prevBtn.addEventListener('click', () => { clearInterval(slideInterval); prevSlide(); startAutoPlay(); });
+nextBtn.addEventListener('click', () => { clearInterval(slideInterval); nextSlide(); startAutoPlay(); });
+leftNav.addEventListener('click', () => { clearInterval(slideInterval); prevSlide(); startAutoPlay(); });
+rightNav.addEventListener('click', () => { clearInterval(slideInterval); nextSlide(); startAutoPlay(); });
+
+// النقاط
+dotsContainer.addEventListener('click', (e) => {
+    if (e.target.classList.contains('dot')) {
+        clearInterval(slideInterval);
+        const index = parseInt(e.target.dataset.index);
+        goToSlide(index);
+        startAutoPlay();
+    }
+});
+
+// الزوم عند النقر على الصورة
+slider.addEventListener('click', (e) => {
+    const img = e.target.closest('.slide-image');
+    if (img) {
+        openModal(img.src);
+    }
+});
+
+// إغلاق الزوم
+closeModal.addEventListener('click', closeModalFunc);
+modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModalFunc();
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { clearInterval(slideInterval); nextSlide(); startAutoPlay(); }
+    if (e.key === 'ArrowLeft') { clearInterval(slideInterval); prevSlide(); startAutoPlay(); }
+    if (e.key === ' ' || e.key === 'Space') { e.preventDefault(); togglePlay(); }
+    if (e.key === 'Escape' && modal.style.display === 'flex') closeModalFunc();
+});
+
+// ============================================
+// بدء التشغيل
+// ============================================
+renderSlides();
+startAutoPlay();
+
+// عرض مساعدة في الكونسول
+console.log('✅ معرض الوسائط يعمل!');
+console.log(`📊 عدد العناصر: ${mediaItems.length}`);
+console.log('⌨️ اختصارات لوحة المفاتيح:');
+console.log('  ➡️ → التالي');
+console.log('  ⬅️ → السابق');
+console.log('  Space → تشغيل/إيقاف');
+console.log('  ESC → إغلاق الزوم');
