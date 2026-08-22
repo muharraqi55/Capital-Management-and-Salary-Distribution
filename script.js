@@ -57,6 +57,7 @@ function createSlider({
     rightNavId,
     isVideo = false,
     autoPlay = true,
+    sliderType = 'image', // 'image' أو 'video'
 }) {
     let currentIndex = 0;
     let isPlaying = true;
@@ -77,13 +78,15 @@ function createSlider({
         container.innerHTML = items.map((item, index) => {
             let content = '';
             if (!isVideo) {
-                content = `<img src="${item.src}" alt="${item.title}" data-index="${index}" class="slide-image">`;
+                content = `<img src="${item.src}" alt="${item.title}" data-index="${index}" class="slide-image" data-src="${item.src}">`;
             } else {
+                const videoId = item.videoId;
                 content = `
                     <iframe 
-                        src="https://www.youtube.com/embed/${item.videoId}?autoplay=0&rel=0&controls=1&enablejsapi=1"
+                        src="https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0&controls=1&enablejsapi=1"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen
+                        data-video-id="${videoId}"
                     ></iframe>
                 `;
             }
@@ -124,8 +127,8 @@ function createSlider({
         if (!isVideo) {
             goToSlide(currentIndex + 1);
         } else {
-            // للفيديو: لا انتقال تلقائي
-            console.log('⏸️ فيديو YouTube - لا انتقال تلقائي');
+            // للفيديو: انتقال يدوي فقط
+            goToSlide(currentIndex + 1);
         }
     }
 
@@ -153,6 +156,37 @@ function createSlider({
         startAutoPlay();
     }
 
+    // ===== الحصول على العنصر النشط =====
+    function getActiveSlide() {
+        return document.querySelector(`#${containerId} .slide.active`);
+    }
+
+    function getActiveImageSrc() {
+        const activeSlide = getActiveSlide();
+        if (activeSlide) {
+            const img = activeSlide.querySelector('.slide-image');
+            if (img) {
+                return img.getAttribute('data-src') || img.src;
+            }
+        }
+        return null;
+    }
+
+    function getActiveVideoId() {
+        const activeSlide = getActiveSlide();
+        if (activeSlide) {
+            const iframe = activeSlide.querySelector('iframe');
+            if (iframe) {
+                const src = iframe.src;
+                const match = src.match(/embed\/([^?]+)/);
+                if (match) {
+                    return match[1];
+                }
+            }
+        }
+        return null;
+    }
+
     // ===== الأحداث =====
     if (playBtn) playBtn.addEventListener('click', togglePlay);
 
@@ -164,11 +198,7 @@ function createSlider({
 
     nextBtn.addEventListener('click', () => {
         clearInterval(slideInterval);
-        if (!isVideo) {
-            nextSlide();
-        } else {
-            goToSlide(currentIndex + 1);
-        }
+        nextSlide();
         startAutoPlay();
     });
 
@@ -180,11 +210,7 @@ function createSlider({
 
     rightNav.addEventListener('click', () => {
         clearInterval(slideInterval);
-        if (!isVideo) {
-            nextSlide();
-        } else {
-            goToSlide(currentIndex + 1);
-        }
+        nextSlide();
         startAutoPlay();
     });
 
@@ -197,15 +223,26 @@ function createSlider({
         }
     });
 
-    // ===== تكبير الصورة =====
+    // ===== تكبير الصورة أو الفيديو =====
     container.addEventListener('click', (e) => {
+        // للصور
         const img = e.target.closest('.slide-image');
         if (img) {
-            openModal(img.src, 'image');
+            const src = img.getAttribute('data-src') || img.src;
+            openModal(src, 'image');
+            return;
         }
+
+        // للفيديوهات
         const iframe = e.target.closest('iframe');
         if (iframe && isVideo) {
-            openModal(iframe.src, 'video');
+            const src = iframe.src;
+            // استخراج videoId من الرابط
+            const match = src.match(/embed\/([^?]+)/);
+            if (match) {
+                const videoId = match[1];
+                openModal(videoId, 'video');
+            }
         }
     });
 
@@ -215,7 +252,15 @@ function createSlider({
         startAutoPlay();
     }
 
-    return { goToSlide, nextSlide, prevSlide };
+    // ===== دوال مساعدة للاستخدام الخارجي =====
+    return {
+        goToSlide,
+        nextSlide,
+        prevSlide,
+        getActiveImageSrc,
+        getActiveVideoId,
+        getCurrentIndex: () => currentIndex,
+    };
 }
 
 // ============================================
@@ -232,16 +277,19 @@ function openModal(src, type) {
         modalImage.style.display = 'block';
         modalVideo.style.display = 'none';
         modalImage.src = src;
+        modalVideo.src = '';
     } else {
         modalImage.style.display = 'none';
         modalVideo.style.display = 'block';
-        modalVideo.src = src + '&autoplay=1';
+        // إضافة autoplay عند التكبير
+        modalVideo.src = `https://www.youtube.com/embed/${src}?autoplay=1&rel=0&controls=1`;
     }
     document.body.style.overflow = 'hidden';
 }
 
 function closeModalFunc() {
     modal.style.display = 'none';
+    modalImage.src = '';
     modalVideo.src = '';
     document.body.style.overflow = 'auto';
 }
@@ -270,6 +318,7 @@ const imageSlider = createSlider({
     rightNavId: 'imageRightNav',
     isVideo: false,
     autoPlay: true,
+    sliderType: 'image',
 });
 
 // ============================================
@@ -280,15 +329,17 @@ const videoSlider = createSlider({
     containerId: 'videoSlidesContainer',
     dotsId: 'videoDotsContainer',
     counterId: 'videoCounter',
-    playBtnId: null, // لا يوجد زر تشغيل للفيديو
+    playBtnId: null,
     prevBtnId: 'videoPrevBtn',
     nextBtnId: 'videoNextBtn',
     leftNavId: 'videoLeftNav',
     rightNavId: 'videoRightNav',
     isVideo: true,
     autoPlay: false,
+    sliderType: 'video',
 });
 
 console.log('✅ معرض الصور والفيديوهات يعمل!');
 console.log(`🖼️ عدد الصور: ${imageItems.length}`);
 console.log(`🎬 عدد الفيديوهات: ${videoItems.length}`);
+console.log('🔄 يمكنك تكبير أي صورة أو فيديو بالنقر عليه');
