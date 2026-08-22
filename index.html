@@ -3,52 +3,208 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>معرض الصور والفيديوهات</title>
+    <title>ادارة راس المال و توزيع الراتب</title>
     <style>
+        /* متغيرات الألوان للوضع الليلي (الافتراضي) */
+        :root {
+            --bg-color: #0a0a0a;
+            --text-color: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.05);
+            --header-bg: rgba(0, 0, 0, 0.5);
+            --btn-bg: #4ecdc4;
+            --btn-text: #000000;
+            --btn-hover-bg: #f5576c;
+            --btn-hover-text: #ffffff;
+            --base-font-size: 16px;
+        }
+
+        /* متغيرات الألوان للوضع النهاري */
+        body.light-theme {
+            --bg-color: #f4f6f8;
+            --text-color: #1a1a1a;
+            --card-bg: rgba(0, 0, 0, 0.03);
+            --card-border: rgba(0, 0, 0, 0.08);
+            --header-bg: rgba(255, 255, 255, 0.8);
+            --btn-bg: #2d3436;
+            --btn-text: #ffffff;
+            --btn-hover-bg: #0984e3;
+            --btn-hover-text: #ffffff;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0a0a0a; color: #fff; padding: 20px; min-height: 100vh; }
-        header { text-align: center; margin-bottom: 30px; }
-        header h1 { font-size: 2.5rem; background: linear-gradient(135deg, #f093fb, #f5576c, #4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .gallery-section { margin-bottom: 50px; background: rgba(255, 255, 255, 0.03); border-radius: 20px; padding: 20px; border: 1px solid rgba(255, 255, 255, 0.05); }
-        .gallery-section h2 { text-align: center; margin-bottom: 20px; font-size: 1.8rem; color: #ddd; }
-        .slider-wrapper { position: relative; max-width: 900px; margin: 0 auto; background: #0a0a0a; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8); }
-        .controls { display: flex; justify-content: center; align-items: center; gap: 10px; padding: 12px 20px; background: rgba(0, 0, 0, 0.9); border-bottom: 1px solid rgba(255, 255, 255, 0.1); flex-wrap: wrap; z-index: 10; position: relative; }
-        .controls button { padding: 6px 16px; border: none; border-radius: 20px; background: #4ecdc4; color: #000; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.85rem; }
-        .controls button:hover { background: #f5576c; color: #fff; transform: scale(1.05); }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--bg-color); 
+            color: var(--text-color); 
+            padding: 20px; 
+            min-height: 100vh; 
+            font-size: var(--base-font-size);
+            transition: background 0.3s ease, color 0.3s ease, font-size 0.2s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            background: var(--header-bg);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+        }
+
+        .top-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #f5576c, #f093fb);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
+        }
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.5);
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+        .control-btn:hover {
+            background: var(--btn-hover-bg);
+            color: var(--btn-hover-text);
+            transform: scale(1.05);
+        }
+
+        header h1 { 
+            font-size: 2.2rem; 
+            background: linear-gradient(135deg, #f093fb, #f5576c, #4ecdc4); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            margin-top: 10px;
+        }
+
+        .gallery-section { 
+            margin-bottom: 50px; 
+            background: var(--card-bg); 
+            border-radius: 20px; 
+            padding: 20px; 
+            border: 1px solid var(--card-border); 
+        }
+        .gallery-section h2 { 
+            text-align: center; 
+            margin-bottom: 20px; 
+            font-size: 1.6rem; 
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+
+        .slider-wrapper { position: relative; max-width: 900px; margin: 0 auto; background: var(--bg-color); border-radius: 15px; overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); border: 1px solid var(--card-border); }
+        .controls { display: flex; justify-content: center; align-items: center; gap: 10px; padding: 12px 20px; background: var(--header-bg); border-bottom: 1px solid var(--card-border); flex-wrap: wrap; z-index: 10; position: relative; }
+        .controls button { padding: 6px 16px; border: none; border-radius: 20px; background: var(--btn-bg); color: var(--btn-text); font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.85rem; }
+        .controls button:hover { background: var(--btn-hover-bg); color: var(--btn-hover-text); transform: scale(1.05); }
         .controls button.play-btn { background: linear-gradient(135deg, #f5576c, #f093fb); color: #fff; }
-        .controls .counter { background: rgba(255, 255, 255, 0.1); padding: 4px 14px; border-radius: 20px; font-size: 0.85rem; color: #aaa; }
-        .slider-container { position: relative; width: 100%; height: 400px; overflow: hidden; background: #0a0a0a; }
-        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.8s ease-in-out, visibility 0s linear 0.8s; display: flex; align-items: center; justify-content: center; background: #0a0a0a; z-index: 1; }
+        .controls .counter { background: var(--card-bg); padding: 4px 14px; border-radius: 20px; font-size: 0.85rem; color: var(--text-color); opacity: 0.7; border: 1px solid var(--card-border); }
+        
+        .slider-container { position: relative; width: 100%; height: 400px; overflow: hidden; background: var(--bg-color); }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.8s ease-in-out, visibility 0s linear 0.8s; display: flex; align-items: center; justify-content: center; background: var(--bg-color); z-index: 1; }
         .slide.active { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity 0.8s ease-in-out, visibility 0s linear 0s; z-index: 2; }
         .slide img, .slide video { width: 100%; height: 100%; object-fit: contain; cursor: zoom-in; }
-        .slide .slide-title { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.7); padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.1); white-space: nowrap; pointer-events: none; z-index: 5; }
+        .slide .slide-title { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.7); padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.1); white-space: nowrap; pointer-events: none; z-index: 5; color: #fff; }
+        
         .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0, 0, 0, 0.6); color: #fff; border: none; padding: 14px 12px; font-size: 1.5rem; cursor: pointer; transition: 0.3s; border-radius: 8px; backdrop-filter: blur(5px); z-index: 10; }
         .nav-btn:hover { background: rgba(78, 205, 196, 0.7); transform: translateY(-50%) scale(1.1); }
         .nav-btn.left { left: 10px; }
         .nav-btn.right { right: 10px; }
-        .dots { display: flex; justify-content: center; gap: 10px; padding: 12px 0; background: rgba(0, 0, 0, 0.8); border-top: 1px solid rgba(255, 255, 255, 0.05); }
-        .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255, 255, 255, 0.25); cursor: pointer; transition: 0.3s; border: 2px solid transparent; }
-        .dot.active { background: #4ecdc4; border-color: #fff; transform: scale(1.3); }
+        
+        .dots { display: flex; justify-content: center; gap: 10px; padding: 12px 0; background: var(--header-bg); border-top: 1px solid var(--card-border); }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(128, 128, 128, 0.5); cursor: pointer; transition: 0.3s; border: 2px solid transparent; }
+        .dot.active { background: #4ecdc4; border-color: var(--text-color); transform: scale(1.3); }
+        
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 1000; justify-content: center; align-items: center; cursor: zoom-out; backdrop-filter: blur(10px); padding: 20px; }
         .modal-content { position: relative; width: 95%; max-width: 1200px; height: 90vh; display: flex; align-items: center; justify-content: center; }
         .modal img, .modal video, .modal iframe { max-width: 100%; max-height: 100%; border-radius: 10px; box-shadow: 0 0 60px rgba(78, 205, 196, 0.2); }
         .modal iframe { width: 100%; height: 100%; border: none; }
         .close-modal { position: absolute; top: 20px; right: 30px; font-size: 2.5rem; color: #fff; cursor: pointer; transition: 0.3s; z-index: 1001; }
         .close-modal:hover { color: #f5576c; transform: rotate(90deg); }
-        @media (max-width: 768px) {
-            body { padding: 10px; } header h1 { font-size: 1.8rem; } .gallery-section { padding: 10px; margin-bottom: 30px; } .gallery-section h2 { font-size: 1.3rem; } .slider-container { height: 280px; } .controls { padding: 8px 12px; gap: 6px; } .controls button { padding: 4px 10px; font-size: 0.7rem; } .controls .counter { font-size: 0.7rem; padding: 3px 10px; } .nav-btn { padding: 10px 8px; font-size: 1.2rem; } .slide .slide-title { font-size: 0.75rem; padding: 5px 15px; bottom: 15px; white-space: normal; } .dots { gap: 6px; padding: 8px 0; } .dot { width: 8px; height: 8px; } .modal-content { height: 80vh; } .close-modal { font-size: 2rem; top: 10px; right: 20px; }
+
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 20px;
+            background: var(--header-bg);
+            border-top: 1px solid var(--card-border);
+            border-radius: 15px 15px 0 0;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            opacity: 0.8;
         }
-        @media (max-width: 480px) { .slider-container { height: 200px; } }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; } 
+            header h1 { font-size: 1.5rem; } 
+            .gallery-section { padding: 10px; margin-bottom: 30px; } 
+            .gallery-section h2 { font-size: 1.2rem; } 
+            .slider-container { height: 280px; } 
+            .controls { padding: 8px 12px; gap: 6px; } 
+            .controls button { padding: 4px 10px; font-size: 0.7rem; } 
+            .controls .counter { font-size: 0.7rem; padding: 3px 10px; } 
+            .nav-btn { padding: 10px 8px; font-size: 1.2rem; } 
+            .slide .slide-title { font-size: 0.75rem; padding: 5px 15px; bottom: 15px; white-space: normal; } 
+            .dots { gap: 6px; padding: 8px 0; } 
+            .dot { width: 8px; height: 8px; } 
+            .modal-content { height: 80vh; } 
+            .close-modal { font-size: 2rem; top: 10px; right: 20px; }
+            .download-btn { font-size: 0.85rem; padding: 8px 15px; }
+        }
+        @media (max-width: 480px) { 
+            .slider-container { height: 200px; } 
+            .top-controls { gap: 8px; }
+            .control-btn { padding: 6px 12px; font-size: 0.8rem; }
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>📸 معرض الصور والفيديوهات</h1>
+        <div class="top-controls">
+            <a href="assets/files/ادارة راس المال.xlsx" download class="download-btn">
+                📥 تحميل الملف اضغط هنا "ادارة راس المال.xlsx"
+            </a>
+            <button id="themeToggle" class="control-btn">🌙 الوضع النهاري</button>
+            <button id="fontDecrease" class="control-btn" title="تصغير الخط">A-</button>
+            <button id="fontIncrease" class="control-btn" title="تكبير الخط">A+</button>
+        </div>
+        <h1>ادارة راس المال و توزيع الراتب</h1>
     </header>
 
     <!-- ===== قسم الصور ===== -->
     <section class="gallery-section">
-        <h2>🖼️ ألبوم الصور</h2>
+        <h2>🖼️ صور عن الملف</h2>
         <div class="slider-wrapper">
             <div class="controls">
                 <button class="play-btn" id="imagePlayBtn">⏸️ إيقاف</button>
@@ -67,7 +223,7 @@
 
     <!-- ===== قسم الفيديوهات (يوتيوب + MP4) ===== -->
     <section class="gallery-section">
-        <h2>🎬 ألبوم الفيديوهات</h2>
+        <h2>🎬 فيديو شرح الاستخدام</h2>
         <div class="slider-wrapper">
             <div class="controls">
                 <button id="videoPrevBtn">⏪ السابق</button>
@@ -87,14 +243,15 @@
     <div class="modal" id="modal">
         <span class="close-modal" id="closeModal">&times;</span>
         <div class="modal-content">
-            <!-- عنصر للصورة -->
             <img id="modalImage" src="" alt="صورة مكبرة" style="display:none;" />
-            <!-- عنصر جديد لفيديو MP4 المحلي -->
             <video id="modalMp4" controls style="display:none; max-width: 100%; max-height: 100%; border-radius: 10px; box-shadow: 0 0 60px rgba(78, 205, 196, 0.2);"></video>
-            <!-- عنصر لفيديو يوتيوب -->
             <iframe id="modalVideo" src="" allowfullscreen style="display:none;"></iframe>
         </div>
     </div>
+
+    <footer>
+        تم عمل الموقع بواسطة muharraqi و جميع الحقوق محفوظة &copy; 2026
+    </footer>
 
     <script src="script.js"></script>
 </body>
