@@ -3,36 +3,31 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>معرض الوسائط المتقدم</title>
+    <title>معرض الصور والفيديوهات</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <!-- شريط العلوي -->
-    <header>
-        <h1>📸 معرض الصور والفيديوهات</h1>
-        <div class="controls">
-            <button id="playBtn">⏸️ إيقاف</button>
-            <button id="prevBtn">⏪ السابق</button>
-            <button id="nextBtn">التالي ⏩</button>
-            <span id="counter">1 / 10</span>
-        </div>
-    </header>
-
-    <!-- منطقة العرض الرئيسية -->
-    <div class="slider-container">
-        <div class="slider" id="slider">
-            <!-- سيتم إضافة المحتوى بواسطة JavaScript -->
-        </div>
-        
-        <!-- أزرار التنقل الجانبية -->
-        <button class="nav-btn left" id="leftNav">❮</button>
-        <button class="nav-btn right" id="rightNav">❯</button>
-        
-        <!-- نقاط التقدم -->
-        <div class="dots" id="dots"></div>
+    <!-- شريط التحكم العلوي -->
+    <div class="controls">
+        <button id="playBtn">⏸️ إيقاف</button>
+        <button id="prevBtn">⏪ السابق</button>
+        <button id="nextBtn">التالي ⏩</button>
+        <span id="counter">1 / 10</span>
     </div>
 
-    <!-- نافذة الزوم (تكبير الصورة) -->
+    <!-- أزرار التنقل الجانبية -->
+    <button class="nav-btn left" id="leftNav">❮</button>
+    <button class="nav-btn right" id="rightNav">❯</button>
+
+    <!-- حاوية الشرائح -->
+    <div class="slider-container">
+        <div id="slidesContainer"></div>
+    </div>
+
+    <!-- نقاط التقدم -->
+    <div class="dots" id="dotsContainer"></div>
+
+    <!-- نافذة التكبير -->
     <div class="modal" id="modal">
         <span class="close-modal" id="closeModal">&times;</span>
         <img id="modalImage" src="" alt="صورة مكبرة" />
