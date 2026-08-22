@@ -1,5 +1,58 @@
 // ============================================
-// 1. المتغيرات والدوال العالمية (يجب أن تكون خارج DOMContentLoaded)
+// 0. إعدادات الثيم وحجم الخط (جديد)
+// ============================================
+const themeToggleBtn = document.getElementById('themeToggle');
+const fontIncreaseBtn = document.getElementById('fontIncrease');
+const fontDecreaseBtn = document.getElementById('fontDecrease');
+const body = document.body;
+
+// 1. منطق الوضع الليلي / النهاري
+let currentTheme = localStorage.getItem('theme') || 'dark';
+if (currentTheme === 'light') {
+    body.classList.add('light-theme');
+    themeToggleBtn.textContent = '☀️ الوضع الليلي';
+}
+
+themeToggleBtn.addEventListener('click', () => {
+    body.classList.toggle('light-theme');
+    if (body.classList.contains('light-theme')) {
+        localStorage.setItem('theme', 'light');
+        themeToggleBtn.textContent = '☀️ الوضع الليلي';
+    } else {
+        localStorage.setItem('theme', 'dark');
+        themeToggleBtn.textContent = '🌙 الوضع النهاري';
+    }
+});
+
+// 2. منطق تكبير وتصغير الخط
+let currentFontSize = parseInt(localStorage.getItem('fontSize')) || 16;
+const minFontSize = 12;
+const maxFontSize = 24;
+
+function updateFontSize() {
+    document.documentElement.style.setProperty('--base-font-size', `${currentFontSize}px`);
+    localStorage.setItem('fontSize', currentFontSize);
+}
+// تطبيق الحجم المحفوظ عند التحميل
+updateFontSize();
+
+fontIncreaseBtn.addEventListener('click', () => {
+    if (currentFontSize < maxFontSize) {
+        currentFontSize += 2;
+        updateFontSize();
+    }
+});
+
+fontDecreaseBtn.addEventListener('click', () => {
+    if (currentFontSize > minFontSize) {
+        currentFontSize -= 2;
+        updateFontSize();
+    }
+});
+
+
+// ============================================
+// 1. المتغيرات والدوال العالمية (الوسائط)
 // ============================================
 const modal = document.getElementById('modal');
 const modalImage = document.getElementById('modalImage');
@@ -11,7 +64,6 @@ function openModal(src, type) {
     if (!modal) return;
     modal.style.display = 'flex';
     
-    // إعادة تعيين جميع العناصر
     modalImage.style.display = 'none';
     modalMp4.style.display = 'none';
     modalVideo.style.display = 'none';
@@ -25,7 +77,7 @@ function openModal(src, type) {
     } else if (type === 'mp4') {
         modalMp4.style.display = 'block';
         modalMp4.src = src;
-        modalMp4.play(); // تشغيل تلقائي عند التكبير
+        modalMp4.play();
     } else if (type === 'youtube') {
         modalVideo.style.display = 'block';
         modalVideo.src = `https://www.youtube.com/embed/${src}?autoplay=1&rel=0&controls=1`;
@@ -37,19 +89,16 @@ function closeModalFunc() {
     if (!modal) return;
     modal.style.display = 'none';
     modalImage.src = '';
-    modalMp4.pause(); // إيقاف الفيديو المحلي عند الإغلاق
+    modalMp4.pause();
     modalMp4.src = '';
     modalVideo.src = '';
     document.body.style.overflow = 'auto';
 }
 
-// الدالة الموحدة التي يستدعيها HTML مباشرة
 window.zoomMedia = function(element, type, src) {
     if (type === 'image') {
-        // نأخذ الرابط مباشرة من عنصر الصورة لتجنب مشاكل علامات الاقتباس
         openModal(element.src, 'image');
     } else {
-        // للفيديوهات نستخدم الرابط الممرر
         openModal(src, type);
     }
 };
@@ -77,7 +126,6 @@ const videoItems = [
 // 3. منطق الصفحة بعد تحميل DOM
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
-    // ربط أحداث الإغلاق
     if (closeModal) closeModal.addEventListener('click', closeModalFunc);
     if (modal) {
         modal.addEventListener('click', (e) => {
@@ -113,7 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
             container.innerHTML = items.map((item, index) => {
                 let content = '';
                 if (!isVideo) {
-                    // نمرر this بأمان لتجنب أخطاء علامات الاقتباس في الروابط
                     content = `<img src="${item.src}" data-src="${item.src}" alt="${item.title}" data-index="${index}" class="slide-image" onclick="window.zoomMedia(this, 'image')">`;
                 } else {
                     if (item.type === 'mp4') {
