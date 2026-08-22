@@ -5,32 +5,32 @@ const mediaItems = [
     // ===== جميع الصور =====
     {
         type: 'image',
-        src: 'assets/images/1.png',
+        src: 'https://muharraqi55.github.io/Capital-Management-and-Salary-Distribution/assets/images/1.png',
         title: 'صورة 1',
     },
     {
         type: 'image',
-        src: 'assets/images/2.png',
+        src: 'https://muharraqi55.github.io/Capital-Management-and-Salary-Distribution/assets/images/2.png',
         title: 'صورة 2',
     },
     {
         type: 'image',
-        src: 'assets/images/3.png',
+        src: 'https://muharraqi55.github.io/Capital-Management-and-Salary-Distribution/assets/images/3.png',
         title: 'صورة 3',
     },
     {
         type: 'image',
-        src: 'assets/images/4.png',
+        src: 'https://muharraqi55.github.io/Capital-Management-and-Salary-Distribution/assets/images/4.png',
         title: 'صورة 4',
     },
     {
         type: 'image',
-        src: 'assets/images/5.png',
+        src: 'https://muharraqi55.github.io/Capital-Management-and-Salary-Distribution/assets/images/5.png',
         title: 'صورة 5',
     },
     {
         type: 'image',
-        src: 'assets/images/6.png',
+        src: 'https://muharraqi55.github.io/Capital-Management-and-Salary-Distribution/assets/images/6.png',
         title: 'صورة 6',
     },
     
