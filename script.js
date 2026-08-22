@@ -5,12 +5,12 @@ const mediaItems = [
     // ===== الصور =====
     {
         type: 'image',
-        src: 'assets/images/1.png',
+        src: 'https://github.com/muharraqi55/Capital-Management-and-Salary-Distribution/blob/main/assets/images/1.png?raw=true',
         title: 'منظر طبيعي 1',
     },
     {
         type: 'image',
-        src: 'assets/images/2.png',
+        src: 'https://github.com/muharraqi55/Capital-Management-and-Salary-Distribution/blob/main/assets/images/2.png?raw=true',
         title: 'منظر طبيعي 2',
     },
     {
