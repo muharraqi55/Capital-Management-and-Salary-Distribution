@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // ============================================
-    // 0. إعدادات الثيم وحجم الخط (مصححة)
+    // 0. إعدادات الثيم وحجم الخط
     // ============================================
     const themeToggleBtn = document.getElementById('themeToggle');
     const fontIncreaseBtn = document.getElementById('fontIncrease');
@@ -27,18 +27,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2. منطق تكبير وتصغير الخط (الإصلاح هنا)
+    // 2. منطق تكبير وتصغير الخط
     let currentFontSize = parseInt(localStorage.getItem('fontSize')) || 16;
     const minFontSize = 12;
     const maxFontSize = 24;
 
     function updateFontSize() {
-        // التغيير على documentElement (html) وليس body
         document.documentElement.style.fontSize = `${currentFontSize}px`;
         localStorage.setItem('fontSize', currentFontSize);
     }
     
-    // تطبيق الحجم المحفوظ عند التحميل
     updateFontSize();
 
     if (fontIncreaseBtn) {
@@ -60,7 +58,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ============================================
-    // 1. المتغيرات والدوال العالمية (الوسائط)
+    // 3. تأثير التمرير على الهيدر
+    // ============================================
+    const header = document.querySelector('header');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+
+    // ============================================
+    // 4. المتغيرات والدوال العالمية (الوسائط)
     // ============================================
     const modal = document.getElementById('modal');
     const modalImage = document.getElementById('modalImage');
@@ -122,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ============================================
-    // 2. البيانات
+    // 5. البيانات
     // ============================================
     const imageItems = [
         { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/1.png', title: 'منظر طبيعي 1' },
@@ -141,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     // ============================================
-    // 3. دالة إنشاء السلايدر
+    // 6. دالة إنشاء السلايدر
     // ============================================
     function createSlider({
         items, containerId, dotsId, counterId, playBtnId = null,
@@ -257,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ============================================
-    // 4. تشغيل المعارض
+    // 7. تشغيل المعارض
     // ============================================
     createSlider({
         items: imageItems, containerId: 'imageSlidesContainer', dotsId: 'imageDotsContainer',
