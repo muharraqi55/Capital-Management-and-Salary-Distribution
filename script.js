@@ -5,32 +5,32 @@ const mediaItems = [
     // ===== الصور =====
     {
         type: 'image',
-        src: 'https://github.com/muharraqi55/Capital-Management-and-Salary-Distribution/blob/main/assets/images/1.png?raw=true',
+        src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/1.png',
         title: 'منظر طبيعي 1',
     },
     {
         type: 'image',
-        src: 'https://github.com/muharraqi55/Capital-Management-and-Salary-Distribution/blob/main/assets/images/2.png?raw=true',
+        src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/2.png',
         title: 'منظر طبيعي 2',
     },
     {
         type: 'image',
-        src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/2.png',
+        src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/3.png',
         title: 'منظر طبيعي 3',
     },
     {
         type: 'image',
-        src: 'hhttps://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/3.png',
+        src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/4.png',
         title: 'منظر طبيعي 4',
     },
     {
         type: 'image',
-        src: 'https://picsum.photos/seed/5/1920/1080',
+        src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/5.png',
         title: 'منظر طبيعي 5',
     },
     {
         type: 'image',
-        src: 'https://picsum.photos/seed/6/1920/1080',
+        src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/6.png',
         title: 'منظر طبيعي 6',
     },
     
