@@ -7,30 +7,68 @@
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <!-- شريط التحكم العلوي -->
-    <div class="controls">
-        <button id="playBtn">⏸️ إيقاف</button>
-        <button id="prevBtn">⏪ السابق</button>
-        <button id="nextBtn">التالي ⏩</button>
-        <span id="counter">1 / 10</span>
-    </div>
+    <header>
+        <h1>📸 معرض الصور والفيديوهات</h1>
+    </header>
 
-    <!-- أزرار التنقل الجانبية -->
-    <button class="nav-btn left" id="leftNav">❮</button>
-    <button class="nav-btn right" id="rightNav">❯</button>
+    <!-- ===== قسم الصور ===== -->
+    <section class="gallery-section">
+        <h2>🖼️ ألبوم الصور</h2>
+        <div class="slider-wrapper">
+            <!-- شريط التحكم العلوي للصور -->
+            <div class="controls" id="imageControls">
+                <button id="imagePlayBtn">⏸️ إيقاف</button>
+                <button id="imagePrevBtn">⏪ السابق</button>
+                <button id="imageNextBtn">التالي ⏩</button>
+                <span id="imageCounter">1 / 6</span>
+            </div>
 
-    <!-- حاوية الشرائح -->
-    <div class="slider-container">
-        <div id="slidesContainer"></div>
-    </div>
+            <!-- أزرار التنقل الجانبية للصور -->
+            <button class="nav-btn left" id="imageLeftNav">❮</button>
+            <button class="nav-btn right" id="imageRightNav">❯</button>
 
-    <!-- نقاط التقدم -->
-    <div class="dots" id="dotsContainer"></div>
+            <!-- حاوية الشرائح للصور -->
+            <div class="slider-container" id="imageSliderContainer">
+                <div id="imageSlidesContainer"></div>
+            </div>
 
-    <!-- نافذة التكبير -->
+            <!-- نقاط التقدم للصور -->
+            <div class="dots" id="imageDotsContainer"></div>
+        </div>
+    </section>
+
+    <!-- ===== قسم الفيديوهات ===== -->
+    <section class="gallery-section">
+        <h2>🎬 ألبوم فيديوهات YouTube</h2>
+        <div class="slider-wrapper">
+            <!-- شريط التحكم العلوي للفيديوهات -->
+            <div class="controls" id="videoControls">
+                <button id="videoPrevBtn">⏪ السابق</button>
+                <button id="videoNextBtn">التالي ⏩</button>
+                <span id="videoCounter">1 / 2</span>
+            </div>
+
+            <!-- أزرار التنقل الجانبية للفيديوهات -->
+            <button class="nav-btn left" id="videoLeftNav">❮</button>
+            <button class="nav-btn right" id="videoRightNav">❯</button>
+
+            <!-- حاوية الشرائح للفيديوهات -->
+            <div class="slider-container" id="videoSliderContainer">
+                <div id="videoSlidesContainer"></div>
+            </div>
+
+            <!-- نقاط التقدم للفيديوهات -->
+            <div class="dots" id="videoDotsContainer"></div>
+        </div>
+    </section>
+
+    <!-- ===== نافذة التكبير الموحدة ===== -->
     <div class="modal" id="modal">
         <span class="close-modal" id="closeModal">&times;</span>
-        <img id="modalImage" src="" alt="صورة مكبرة" />
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="صورة مكبرة" />
+            <iframe id="modalVideo" src="" allowfullscreen></iframe>
+        </div>
     </div>
 
     <script src="script.js"></script>
