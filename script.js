@@ -1,8 +1,8 @@
 // ============================================
-// معرض الوسائط - صور من الإنترنت
+// قائمة الوسائط - أضف صورك وفيديوهاتك هنا
 // ============================================
 const mediaItems = [
-    // ===== صور من الإنترنت (تعمل فوراً) =====
+    // ===== الصور =====
     {
         type: 'image',
         src: 'https://picsum.photos/seed/1/1920/1080',
@@ -48,15 +48,15 @@ const mediaItems = [
 ];
 
 // ============================================
-// باقي الكود - نفس الكود السابق (لا تغيره)
+// المتغيرات الأساسية
 // ============================================
 let currentIndex = 0;
 let isPlaying = true;
 let slideInterval = null;
-const SLIDE_DELAY = 5000;
+const SLIDE_DELAY = 5000; // 5 ثواني
 
-const slider = document.getElementById('slider');
-const dotsContainer = document.getElementById('dots');
+const slidesContainer = document.getElementById('slidesContainer');
+const dotsContainer = document.getElementById('dotsContainer');
 const counter = document.getElementById('counter');
 const playBtn = document.getElementById('playBtn');
 const prevBtn = document.getElementById('prevBtn');
@@ -67,8 +67,11 @@ const modal = document.getElementById('modal');
 const modalImage = document.getElementById('modalImage');
 const closeModal = document.getElementById('closeModal');
 
+// ============================================
+// عرض الشرائح
+// ============================================
 function renderSlides() {
-    slider.innerHTML = mediaItems.map((item, index) => {
+    slidesContainer.innerHTML = mediaItems.map((item, index) => {
         let content = '';
         let typeLabel = '';
         
@@ -79,52 +82,51 @@ function renderSlides() {
             content = `
                 <iframe 
                     src="https://www.youtube.com/embed/${item.videoId}?autoplay=0&rel=0&controls=1&loop=1&playlist=${item.videoId}"
-                    frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen
-                    style="width: 100%; height: 100%;"
                 ></iframe>
             `;
             typeLabel = '🎬 YouTube';
-        } else if (item.type === 'video') {
-            content = `
-                <video controls autoplay muted loop>
-                    <source src="${item.src}" type="video/mp4">
-                    متصفحك لا يدعم الفيديو
-                </video>
-            `;
-            typeLabel = '🎥 فيديو';
         }
         
         return `
-            <div class="slide" data-index="${index}">
+            <div class="slide ${index === 0 ? 'active' : ''}" data-index="${index}">
                 ${content}
-                <span class="slide-type">${typeLabel}</span>
-                <div class="slide-title">${item.title}</div>
+                <span class="type-label">${typeLabel}</span>
+                <div class="title">${item.title}</div>
             </div>
         `;
     }).join('');
-    
+
     dotsContainer.innerHTML = mediaItems.map((_, index) => `
         <span class="dot ${index === 0 ? 'active' : ''}" data-index="${index}"></span>
     `).join('');
-    
+
     updateCounter();
+    console.log(`✅ تم عرض ${mediaItems.length} عنصر`);
 }
 
+// ============================================
+// الانتقال إلى شريحة معينة
+// ============================================
 function goToSlide(index) {
     if (index < 0) index = mediaItems.length - 1;
     if (index >= mediaItems.length) index = 0;
+
+    // إخفاء جميع الشرائح
+    document.querySelectorAll('.slide').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.dot').forEach(el => el.classList.remove('active'));
+
+    // إظهار الشريحة المطلوبة
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
     
+    if (slides[index]) slides[index].classList.add('active');
+    if (dots[index]) dots[index].classList.add('active');
+
     currentIndex = index;
-    const offset = -index * 100;
-    slider.style.transform = `translateX(${offset}%)`;
-    
-    document.querySelectorAll('.dot').forEach((dot, i) => {
-        dot.classList.toggle('active', i === index);
-    });
-    
     updateCounter();
+    console.log(`📺 انتقل إلى: ${index + 1} / ${mediaItems.length}`);
 }
 
 function nextSlide() {
@@ -139,23 +141,26 @@ function updateCounter() {
     counter.textContent = `${currentIndex + 1} / ${mediaItems.length}`;
 }
 
+// ============================================
+// التشغيل التلقائي
+// ============================================
 function startAutoPlay() {
     if (slideInterval) clearInterval(slideInterval);
     if (isPlaying) {
         slideInterval = setInterval(nextSlide, SLIDE_DELAY);
+        console.log('▶️ التشغيل التلقائي بدأ');
     }
 }
 
 function togglePlay() {
     isPlaying = !isPlaying;
     playBtn.textContent = isPlaying ? '⏸️ إيقاف' : '▶️ تشغيل';
-    if (isPlaying) {
-        startAutoPlay();
-    } else {
-        clearInterval(slideInterval);
-    }
+    startAutoPlay();
 }
 
+// ============================================
+// نافذة التكبير
+// ============================================
 function openModal(src) {
     modal.style.display = 'flex';
     modalImage.src = src;
@@ -167,11 +172,34 @@ function closeModalFunc() {
     document.body.style.overflow = 'auto';
 }
 
+// ============================================
+// الأحداث (Event Listeners)
+// ============================================
 playBtn.addEventListener('click', togglePlay);
-prevBtn.addEventListener('click', () => { clearInterval(slideInterval); prevSlide(); startAutoPlay(); });
-nextBtn.addEventListener('click', () => { clearInterval(slideInterval); nextSlide(); startAutoPlay(); });
-leftNav.addEventListener('click', () => { clearInterval(slideInterval); prevSlide(); startAutoPlay(); });
-rightNav.addEventListener('click', () => { clearInterval(slideInterval); nextSlide(); startAutoPlay(); });
+
+prevBtn.addEventListener('click', () => {
+    clearInterval(slideInterval);
+    prevSlide();
+    startAutoPlay();
+});
+
+nextBtn.addEventListener('click', () => {
+    clearInterval(slideInterval);
+    nextSlide();
+    startAutoPlay();
+});
+
+leftNav.addEventListener('click', () => {
+    clearInterval(slideInterval);
+    prevSlide();
+    startAutoPlay();
+});
+
+rightNav.addEventListener('click', () => {
+    clearInterval(slideInterval);
+    nextSlide();
+    startAutoPlay();
+});
 
 dotsContainer.addEventListener('click', (e) => {
     if (e.target.classList.contains('dot')) {
@@ -182,7 +210,7 @@ dotsContainer.addEventListener('click', (e) => {
     }
 });
 
-slider.addEventListener('click', (e) => {
+slidesContainer.addEventListener('click', (e) => {
     const img = e.target.closest('.slide-image');
     if (img) {
         openModal(img.src);
@@ -194,15 +222,37 @@ modal.addEventListener('click', (e) => {
     if (e.target === modal) closeModalFunc();
 });
 
+// اختصارات لوحة المفاتيح
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') { clearInterval(slideInterval); nextSlide(); startAutoPlay(); }
-    if (e.key === 'ArrowLeft') { clearInterval(slideInterval); prevSlide(); startAutoPlay(); }
-    if (e.key === ' ' || e.key === 'Space') { e.preventDefault(); togglePlay(); }
-    if (e.key === 'Escape' && modal.style.display === 'flex') closeModalFunc();
+    if (e.key === 'ArrowRight') {
+        clearInterval(slideInterval);
+        nextSlide();
+        startAutoPlay();
+    }
+    if (e.key === 'ArrowLeft') {
+        clearInterval(slideInterval);
+        prevSlide();
+        startAutoPlay();
+    }
+    if (e.key === ' ' || e.key === 'Space') {
+        e.preventDefault();
+        togglePlay();
+    }
+    if (e.key === 'Escape') {
+        closeModalFunc();
+    }
 });
 
+// ============================================
+// بدء التشغيل
+// ============================================
 renderSlides();
 startAutoPlay();
 
 console.log('✅ معرض الوسائط يعمل!');
 console.log(`📊 عدد العناصر: ${mediaItems.length}`);
+console.log('⌨️ اختصارات لوحة المفاتيح:');
+console.log('  ➡️ → التالي');
+console.log('  ⬅️ → السابق');
+console.log('  Space → تشغيل/إيقاف');
+console.log('  ESC → إغلاق التكبير');
