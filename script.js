@@ -15,28 +15,43 @@ const mediaItems = [
     },
     {
         type: 'image',
-        src: 'assets/images/photo3.jpg',
+        src: 'assets/images/3.png',
         title: 'صورة شخصية جميلة',
+    },
+    {
+        type: 'image',
+        src: 'assets/images/4.png',
+        title: 'صورة رائعة 4',
+    },
+    {
+        type: 'image',
+        src: 'assets/images/5.png',
+        title: 'صورة رائعة 5',
+    },
+    {
+        type: 'image',
+        src: 'assets/images/6.png',
+        title: 'صورة رائعة 6',
     },
     
     // ===== فيديوهات YouTube =====
     {
         type: 'youtube',
-        videoId: 'y4ETb8WrcuQ',  // ضع ID فيديو YouTube هنا
+        videoId: 'y4ETb8WrcuQ',
         title: 'فيديو ممتع على YouTube',
     },
     {
         type: 'youtube',
-        videoId: '9bZkp7q19f0',  // مثال: PSY - Gangnam Style
+        videoId: '9bZkp7q19f0',
         title: 'فيديو رائع آخر',
     },
     
-    // ===== فيديوهات محلية (اختياري) =====
+    // ===== فيديو محلي (اختياري) =====
     {
-         type: 'video',
-         src: 'assets/videos/2.mp4',
-         title: 'فيديو محلي',
-     },
+        type: 'video',
+        src: 'assets/videos/2.mp4',
+        title: 'فيديو محلي',
+    },
 ];
 
 // ============================================
