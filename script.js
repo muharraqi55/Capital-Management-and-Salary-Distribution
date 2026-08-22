@@ -1,37 +1,37 @@
 // ============================================
-// قائمة الوسائط - جميع صورك موجودة هنا
+// معرض الوسائط - صور من الإنترنت
 // ============================================
 const mediaItems = [
-    // ===== جميع الصور =====
+    // ===== صور من الإنترنت (تعمل فوراً) =====
     {
         type: 'image',
-        src: 'https://muharraqi55.github.io/Capital-Management-and-Salary-Distribution/assets/images/1.png',
-        title: 'صورة 1',
+        src: 'https://picsum.photos/seed/1/1920/1080',
+        title: 'منظر طبيعي 1',
     },
     {
         type: 'image',
-        src: 'https://muharraqi55.github.io/Capital-Management-and-Salary-Distribution/assets/images/2.png',
-        title: 'صورة 2',
+        src: 'https://picsum.photos/seed/2/1920/1080',
+        title: 'منظر طبيعي 2',
     },
     {
         type: 'image',
-        src: 'https://muharraqi55.github.io/Capital-Management-and-Salary-Distribution/assets/images/3.png',
-        title: 'صورة 3',
+        src: 'https://picsum.photos/seed/3/1920/1080',
+        title: 'منظر طبيعي 3',
     },
     {
         type: 'image',
-        src: 'https://muharraqi55.github.io/Capital-Management-and-Salary-Distribution/assets/images/4.png',
-        title: 'صورة 4',
+        src: 'https://picsum.photos/seed/4/1920/1080',
+        title: 'منظر طبيعي 4',
     },
     {
         type: 'image',
-        src: 'https://muharraqi55.github.io/Capital-Management-and-Salary-Distribution/assets/images/5.png',
-        title: 'صورة 5',
+        src: 'https://picsum.photos/seed/5/1920/1080',
+        title: 'منظر طبيعي 5',
     },
     {
         type: 'image',
-        src: 'https://muharraqi55.github.io/Capital-Management-and-Salary-Distribution/assets/images/6.png',
-        title: 'صورة 6',
+        src: 'https://picsum.photos/seed/6/1920/1080',
+        title: 'منظر طبيعي 6',
     },
     
     // ===== فيديوهات YouTube =====
@@ -45,17 +45,10 @@ const mediaItems = [
         videoId: '9bZkp7q19f0',
         title: 'فيديو رائع آخر',
     },
-    
-    // ===== فيديو محلي (اختياري) =====
-    {
-        type: 'video',
-        src: 'assets/videos/2.mp4',
-        title: 'فيديو محلي',
-    },
 ];
 
 // ============================================
-// باقي الكود (نفسه كما هو)
+// باقي الكود - نفس الكود السابق (لا تغيره)
 // ============================================
 let currentIndex = 0;
 let isPlaying = true;
@@ -80,7 +73,7 @@ function renderSlides() {
         let typeLabel = '';
         
         if (item.type === 'image') {
-            content = `<img src="${item.src}" alt="${item.title}" data-index="${index}" class="slide-image" onerror="this.style.display='none'">`;
+            content = `<img src="${item.src}" alt="${item.title}" data-index="${index}" class="slide-image">`;
             typeLabel = '🖼️ صورة';
         } else if (item.type === 'youtube') {
             content = `
@@ -213,8 +206,3 @@ startAutoPlay();
 
 console.log('✅ معرض الوسائط يعمل!');
 console.log(`📊 عدد العناصر: ${mediaItems.length}`);
-console.log('⌨️ اختصارات لوحة المفاتيح:');
-console.log('  ➡️ → التالي');
-console.log('  ⬅️ → السابق');
-console.log('  Space → تشغيل/إيقاف');
-console.log('  ESC → إغلاق الزوم');
