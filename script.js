@@ -5,12 +5,12 @@ const mediaItems = [
     // ===== الصور =====
     {
         type: 'image',
-        src: 'https://picsum.photos/seed/1/1920/1080',
+        src: 'assets/images/1.png',
         title: 'منظر طبيعي 1',
     },
     {
         type: 'image',
-        src: 'https://picsum.photos/seed/2/1920/1080',
+        src: 'assets/images/2.png',
         title: 'منظر طبيعي 2',
     },
     {
