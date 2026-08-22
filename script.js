@@ -1,5 +1,61 @@
 // ============================================
-// 1. البيانات (أضف مسارات ملفاتك المحلية هنا)
+// 1. المتغيرات والدوال العالمية (يجب أن تكون خارج DOMContentLoaded)
+// ============================================
+const modal = document.getElementById('modal');
+const modalImage = document.getElementById('modalImage');
+const modalMp4 = document.getElementById('modalMp4');
+const modalVideo = document.getElementById('modalVideo');
+const closeModal = document.getElementById('closeModal');
+
+function openModal(src, type) {
+    if (!modal) return;
+    modal.style.display = 'flex';
+    
+    // إعادة تعيين جميع العناصر
+    modalImage.style.display = 'none';
+    modalMp4.style.display = 'none';
+    modalVideo.style.display = 'none';
+    modalImage.src = '';
+    modalMp4.src = '';
+    modalVideo.src = '';
+
+    if (type === 'image') {
+        modalImage.style.display = 'block';
+        modalImage.src = src;
+    } else if (type === 'mp4') {
+        modalMp4.style.display = 'block';
+        modalMp4.src = src;
+        modalMp4.play(); // تشغيل تلقائي عند التكبير
+    } else if (type === 'youtube') {
+        modalVideo.style.display = 'block';
+        modalVideo.src = `https://www.youtube.com/embed/${src}?autoplay=1&rel=0&controls=1`;
+    }
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModalFunc() {
+    if (!modal) return;
+    modal.style.display = 'none';
+    modalImage.src = '';
+    modalMp4.pause(); // إيقاف الفيديو المحلي عند الإغلاق
+    modalMp4.src = '';
+    modalVideo.src = '';
+    document.body.style.overflow = 'auto';
+}
+
+// الدالة الموحدة التي يستدعيها HTML مباشرة
+window.zoomMedia = function(element, type, src) {
+    if (type === 'image') {
+        // نأخذ الرابط مباشرة من عنصر الصورة لتجنب مشاكل علامات الاقتباس
+        openModal(element.src, 'image');
+    } else {
+        // للفيديوهات نستخدم الرابط الممرر
+        openModal(src, type);
+    }
+};
+
+// ============================================
+// 2. البيانات
 // ============================================
 const imageItems = [
     { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/1.png', title: 'منظر طبيعي 1' },
@@ -8,77 +64,26 @@ const imageItems = [
     { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/4.png', title: 'منظر طبيعي 4' },
     { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/5.png', title: 'منظر طبيعي 5' },
     { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/6.png', title: 'منظر طبيعي 6' },
-    { src: 'assets/images/6.png', title: 'منظر طبيعي 6' },
+    { src: 'assets/images/6.png', title: 'صورة محلية 6' },
 ];
 
 const videoItems = [
-    // فيديو يوتيوب
     { type: 'youtube', videoId: 'y4ETb8WrcuQ', title: 'فيديو يوتيوب 1' },
     { type: 'youtube', videoId: 'IttOZGG69mo', title: 'فيديو يوتيوب 2' },
-    
-    // 👇 أضف فيديوهات MP4 محلية هنا (تأكد من صحة المسار)
     { type: 'mp4', mp4Src: 'assets/videos/2.mp4', title: 'فيديو محلي 1' },
-    // { type: 'mp4', mp4Src: 'assets/video2.mp4', title: 'فيديو محلي 2' },
 ];
 
 // ============================================
-// 2. دوال التكبير الموحدة
-// ============================================
-function zoomMedia(src, type) {
-    openModal(src, type);
-}
-
-// ربط الدالة بـ window لتعمل مع onclick في HTML
-window.zoomMedia = zoomMedia;
-
-// ============================================
-// 3. منطق الصفحة
+// 3. منطق الصفحة بعد تحميل DOM
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('modal');
-    const modalImage = document.getElementById('modalImage');
-    const modalMp4 = document.getElementById('modalMp4');
-    const modalVideo = document.getElementById('modalVideo');
-    const closeModal = document.getElementById('closeModal');
-
-    function openModal(src, type) {
-        modal.style.display = 'flex';
-        
-        // إعادة تعيين جميع العناصر
-        modalImage.style.display = 'none';
-        modalMp4.style.display = 'none';
-        modalVideo.style.display = 'none';
-        modalImage.src = '';
-        modalMp4.src = '';
-        modalVideo.src = '';
-
-        if (type === 'image') {
-            modalImage.style.display = 'block';
-            modalImage.src = src;
-        } else if (type === 'mp4') {
-            modalMp4.style.display = 'block';
-            modalMp4.src = src;
-            modalMp4.play(); // تشغيل تلقائي عند التكبير
-        } else if (type === 'youtube') {
-            modalVideo.style.display = 'block';
-            modalVideo.src = `https://www.youtube.com/embed/${src}?autoplay=1&rel=0&controls=1`;
-        }
-        document.body.style.overflow = 'hidden';
+    // ربط أحداث الإغلاق
+    if (closeModal) closeModal.addEventListener('click', closeModalFunc);
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModalFunc();
+        });
     }
-
-    function closeModalFunc() {
-        modal.style.display = 'none';
-        modalImage.src = '';
-        modalMp4.pause(); // إيقاف الفيديو المحلي عند الإغلاق
-        modalMp4.src = '';
-        modalVideo.src = '';
-        document.body.style.overflow = 'auto';
-    }
-
-    closeModal.addEventListener('click', closeModalFunc);
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModalFunc();
-    });
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeModalFunc();
     });
@@ -108,20 +113,19 @@ document.addEventListener('DOMContentLoaded', () => {
             container.innerHTML = items.map((item, index) => {
                 let content = '';
                 if (!isVideo) {
-                    content = `<img src="${item.src}" data-src="${item.src}" alt="${item.title}" data-index="${index}" class="slide-image" onclick="window.zoomMedia('${item.src}', 'image')">`;
+                    // نمرر this بأمان لتجنب أخطاء علامات الاقتباس في الروابط
+                    content = `<img src="${item.src}" data-src="${item.src}" alt="${item.title}" data-index="${index}" class="slide-image" onclick="window.zoomMedia(this, 'image')">`;
                 } else {
                     if (item.type === 'mp4') {
-                        // عرض فيديو MP4 محلي
                         content = `
-                            <div class="video-click-wrapper" onclick="window.zoomMedia('${item.mp4Src}', 'mp4')" style="width: 100%; height: 100%; position: relative; cursor: zoom-in; display: flex; align-items: center; justify-content: center; background: #000;">
+                            <div class="video-click-wrapper" onclick="window.zoomMedia(null, 'mp4', '${item.mp4Src}')" style="width: 100%; height: 100%; position: relative; cursor: zoom-in; display: flex; align-items: center; justify-content: center; background: #000;">
                                 <video src="${item.mp4Src}" style="pointer-events: none; width: 100%; height: 100%; object-fit: contain;"></video>
                                 <div style="position: absolute; font-size: 3rem; color: rgba(255, 255, 255, 0.8); pointer-events: none; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">▶️</div>
                             </div>
                         `;
                     } else {
-                        // عرض فيديو يوتيوب
                         content = `
-                            <div class="video-click-wrapper" onclick="window.zoomMedia('${item.videoId}', 'youtube')" style="width: 100%; height: 100%; position: relative; cursor: zoom-in; display: flex; align-items: center; justify-content: center; background: #000;">
+                            <div class="video-click-wrapper" onclick="window.zoomMedia(null, 'youtube', '${item.videoId}')" style="width: 100%; height: 100%; position: relative; cursor: zoom-in; display: flex; align-items: center; justify-content: center; background: #000;">
                                 <iframe src="https://www.youtube.com/embed/${item.videoId}?autoplay=0&rel=0&controls=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="pointer-events: none; width: 100%; height: 100%; border: none;"></iframe>
                                 <div style="position: absolute; font-size: 3rem; color: rgba(255, 255, 255, 0.8); pointer-events: none; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">▶️</div>
                             </div>
@@ -174,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (playBtn) playBtn.addEventListener('click', togglePlay);
+        
         [prevBtn, nextBtn, leftNav, rightNav].forEach(btn => {
             btn.addEventListener('click', function() {
                 clearInterval(slideInterval);
@@ -182,6 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 startAutoPlay();
             });
         });
+        
         dotsContainer.addEventListener('click', function(e) {
             if (e.target.classList.contains('dot')) {
                 clearInterval(slideInterval);
