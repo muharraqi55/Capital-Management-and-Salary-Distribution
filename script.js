@@ -1,143 +1,147 @@
-// ============================================
-// 0. إعدادات الثيم وحجم الخط (جديد)
-// ============================================
-const themeToggleBtn = document.getElementById('themeToggle');
-const fontIncreaseBtn = document.getElementById('fontIncrease');
-const fontDecreaseBtn = document.getElementById('fontDecrease');
-const body = document.body;
-
-// 1. منطق الوضع الليلي / النهاري
-let currentTheme = localStorage.getItem('theme') || 'dark';
-if (currentTheme === 'light') {
-    body.classList.add('light-theme');
-    themeToggleBtn.textContent = '☀️ الوضع الليلي';
-}
-
-themeToggleBtn.addEventListener('click', () => {
-    body.classList.toggle('light-theme');
-    if (body.classList.contains('light-theme')) {
-        localStorage.setItem('theme', 'light');
-        themeToggleBtn.textContent = '☀️ الوضع الليلي';
-    } else {
-        localStorage.setItem('theme', 'dark');
-        themeToggleBtn.textContent = '🌙 الوضع النهاري';
-    }
-});
-
-// 2. منطق تكبير وتصغير الخط
-let currentFontSize = parseInt(localStorage.getItem('fontSize')) || 16;
-const minFontSize = 12;
-const maxFontSize = 24;
-
-function updateFontSize() {
-    document.documentElement.style.setProperty('--base-font-size', `${currentFontSize}px`);
-    localStorage.setItem('fontSize', currentFontSize);
-}
-// تطبيق الحجم المحفوظ عند التحميل
-updateFontSize();
-
-fontIncreaseBtn.addEventListener('click', () => {
-    if (currentFontSize < maxFontSize) {
-        currentFontSize += 2;
-        updateFontSize();
-    }
-});
-
-fontDecreaseBtn.addEventListener('click', () => {
-    if (currentFontSize > minFontSize) {
-        currentFontSize -= 2;
-        updateFontSize();
-    }
-});
-
-
-// ============================================
-// 1. المتغيرات والدوال العالمية (الوسائط)
-// ============================================
-const modal = document.getElementById('modal');
-const modalImage = document.getElementById('modalImage');
-const modalMp4 = document.getElementById('modalMp4');
-const modalVideo = document.getElementById('modalVideo');
-const closeModal = document.getElementById('closeModal');
-
-function openModal(src, type) {
-    if (!modal) return;
-    modal.style.display = 'flex';
-    
-    modalImage.style.display = 'none';
-    modalMp4.style.display = 'none';
-    modalVideo.style.display = 'none';
-    modalImage.src = '';
-    modalMp4.src = '';
-    modalVideo.src = '';
-
-    if (type === 'image') {
-        modalImage.style.display = 'block';
-        modalImage.src = src;
-    } else if (type === 'mp4') {
-        modalMp4.style.display = 'block';
-        modalMp4.src = src;
-        modalMp4.play();
-    } else if (type === 'youtube') {
-        modalVideo.style.display = 'block';
-        modalVideo.src = `https://www.youtube.com/embed/${src}?autoplay=1&rel=0&controls=1`;
-    }
-    document.body.style.overflow = 'hidden';
-}
-
-function closeModalFunc() {
-    if (!modal) return;
-    modal.style.display = 'none';
-    modalImage.src = '';
-    modalMp4.pause();
-    modalMp4.src = '';
-    modalVideo.src = '';
-    document.body.style.overflow = 'auto';
-}
-
-window.zoomMedia = function(element, type, src) {
-    if (type === 'image') {
-        openModal(element.src, 'image');
-    } else {
-        openModal(src, type);
-    }
-};
-
-// ============================================
-// 2. البيانات
-// ============================================
-const imageItems = [
-    { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/1.png', title: 'منظر طبيعي 1' },
-    { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/2.png', title: 'منظر طبيعي 2' },
-    { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/3.png', title: 'منظر طبيعي 3' },
-    { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/4.png', title: 'منظر طبيعي 4' },
-    { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/5.png', title: 'منظر طبيعي 5' },
-    { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/6.png', title: 'منظر طبيعي 6' },
-    { src: 'assets/images/6.png', title: 'صورة محلية 6' },
-];
-
-const videoItems = [
-    { type: 'youtube', videoId: 'y4ETb8WrcuQ', title: 'فيديو يوتيوب 1' },
-    { type: 'youtube', videoId: 'IttOZGG69mo', title: 'فيديو يوتيوب 2' },
-    { type: 'mp4', mp4Src: 'assets/videos/2.mp4', title: 'فيديو محلي 1' },
-];
-
-// ============================================
-// 3. منطق الصفحة بعد تحميل DOM
-// ============================================
 document.addEventListener('DOMContentLoaded', () => {
-    if (closeModal) closeModal.addEventListener('click', closeModalFunc);
+    // ============================================
+    // 0. إعدادات الثيم وحجم الخط (مصححة ومضمونة)
+    // ============================================
+    const themeToggleBtn = document.getElementById('themeToggle');
+    const fontIncreaseBtn = document.getElementById('fontIncrease');
+    const fontDecreaseBtn = document.getElementById('fontDecrease');
+    const body = document.body;
+
+    // 1. منطق الوضع الليلي / النهاري
+    let currentTheme = localStorage.getItem('theme') || 'dark';
+    if (currentTheme === 'light') {
+        body.classList.add('light-theme');
+        if (themeToggleBtn) themeToggleBtn.textContent = '☀️ الوضع الليلي';
+    }
+
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            body.classList.toggle('light-theme');
+            if (body.classList.contains('light-theme')) {
+                localStorage.setItem('theme', 'light');
+                themeToggleBtn.textContent = '☀️ الوضع الليلي';
+            } else {
+                localStorage.setItem('theme', 'dark');
+                themeToggleBtn.textContent = '🌙 الوضع النهاري';
+            }
+        });
+    }
+
+    // 2. منطق تكبير وتصغير الخط
+    let currentFontSize = parseInt(localStorage.getItem('fontSize')) || 16;
+    const minFontSize = 12;
+    const maxFontSize = 24;
+
+    function updateFontSize() {
+        document.documentElement.style.setProperty('--base-font-size', `${currentFontSize}px`);
+        localStorage.setItem('fontSize', currentFontSize);
+    }
+    
+    // تطبيق الحجم المحفوظ عند التحميل
+    updateFontSize();
+
+    if (fontIncreaseBtn) {
+        fontIncreaseBtn.addEventListener('click', () => {
+            if (currentFontSize < maxFontSize) {
+                currentFontSize += 2;
+                updateFontSize();
+            }
+        });
+    }
+
+    if (fontDecreaseBtn) {
+        fontDecreaseBtn.addEventListener('click', () => {
+            if (currentFontSize > minFontSize) {
+                currentFontSize -= 2;
+                updateFontSize();
+            }
+        });
+    }
+
+    // ============================================
+    // 1. المتغيرات والدوال العالمية (الوسائط)
+    // ============================================
+    const modal = document.getElementById('modal');
+    const modalImage = document.getElementById('modalImage');
+    const modalMp4 = document.getElementById('modalMp4');
+    const modalVideo = document.getElementById('modalVideo');
+    const closeModal = document.getElementById('closeModal');
+
+    // جعل الدوال متاحة عالمياً (Global) لتعمل مع أحداث onclick في HTML
+    window.openModal = function(src, type) {
+        if (!modal) return;
+        modal.style.display = 'flex';
+        
+        modalImage.style.display = 'none';
+        modalMp4.style.display = 'none';
+        modalVideo.style.display = 'none';
+        modalImage.src = '';
+        modalMp4.src = '';
+        modalVideo.src = '';
+
+        if (type === 'image') {
+            modalImage.style.display = 'block';
+            modalImage.src = src;
+        } else if (type === 'mp4') {
+            modalMp4.style.display = 'block';
+            modalMp4.src = src;
+            modalMp4.play();
+        } else if (type === 'youtube') {
+            modalVideo.style.display = 'block';
+            modalVideo.src = `https://www.youtube.com/embed/${src}?autoplay=1&rel=0&controls=1`;
+        }
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.closeModalFunc = function() {
+        if (!modal) return;
+        modal.style.display = 'none';
+        modalImage.src = '';
+        modalMp4.pause();
+        modalMp4.src = '';
+        modalVideo.src = '';
+        document.body.style.overflow = 'auto';
+    };
+
+    window.zoomMedia = function(element, type, src) {
+        if (type === 'image') {
+            window.openModal(element.src, 'image');
+        } else {
+            window.openModal(src, type);
+        }
+    };
+
+    if (closeModal) closeModal.addEventListener('click', window.closeModalFunc);
     if (modal) {
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModalFunc();
+            if (e.target === modal) window.closeModalFunc();
         });
     }
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeModalFunc();
+        if (e.key === 'Escape') window.closeModalFunc();
     });
 
     // ============================================
-    // 4. دالة إنشاء السلايدر
+    // 2. البيانات
+    // ============================================
+    const imageItems = [
+        { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/1.png', title: 'منظر طبيعي 1' },
+        { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/2.png', title: 'منظر طبيعي 2' },
+        { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/3.png', title: 'منظر طبيعي 3' },
+        { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/4.png', title: 'منظر طبيعي 4' },
+        { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/5.png', title: 'منظر طبيعي 5' },
+        { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/6.png', title: 'منظر طبيعي 6' },
+        { src: 'assets/images/6.png', title: 'صورة محلية 6' },
+    ];
+
+    const videoItems = [
+        { type: 'youtube', videoId: 'y4ETb8WrcuQ', title: 'فيديو يوتيوب 1' },
+        { type: 'youtube', videoId: 'IttOZGG69mo', title: 'فيديو يوتيوب 2' },
+        { type: 'mp4', mp4Src: 'assets/videos/2.mp4', title: 'فيديو محلي 1' },
+    ];
+
+    // ============================================
+    // 3. دالة إنشاء السلايدر
     // ============================================
     function createSlider({
         items, containerId, dotsId, counterId, playBtnId = null,
@@ -209,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function nextSlide() { goToSlide(currentIndex + 1); }
         function prevSlide() { goToSlide(currentIndex - 1); }
-        function updateCounter() { counter.textContent = `${currentIndex + 1} / ${items.length}`; }
+        function updateCounter() { if(counter) counter.textContent = `${currentIndex + 1} / ${items.length}`; }
 
         function startAutoPlay() {
             if (!autoPlay || isVideo) return;
@@ -227,21 +231,25 @@ document.addEventListener('DOMContentLoaded', () => {
         if (playBtn) playBtn.addEventListener('click', togglePlay);
         
         [prevBtn, nextBtn, leftNav, rightNav].forEach(btn => {
-            btn.addEventListener('click', function() {
-                clearInterval(slideInterval);
-                if (this === prevBtn || this === leftNav) prevSlide();
-                else nextSlide();
-                startAutoPlay();
-            });
-        });
-        
-        dotsContainer.addEventListener('click', function(e) {
-            if (e.target.classList.contains('dot')) {
-                clearInterval(slideInterval);
-                goToSlide(parseInt(e.target.dataset.index));
-                startAutoPlay();
+            if (btn) {
+                btn.addEventListener('click', function() {
+                    clearInterval(slideInterval);
+                    if (this === prevBtn || this === leftNav) prevSlide();
+                    else nextSlide();
+                    startAutoPlay();
+                });
             }
         });
+        
+        if (dotsContainer) {
+            dotsContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('dot')) {
+                    clearInterval(slideInterval);
+                    goToSlide(parseInt(e.target.dataset.index));
+                    startAutoPlay();
+                }
+            });
+        }
 
         renderSlides();
         if (autoPlay && !isVideo) startAutoPlay();
@@ -249,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ============================================
-    // 5. تشغيل المعارض
+    // 4. تشغيل المعارض
     // ============================================
     createSlider({
         items: imageItems, containerId: 'imageSlidesContainer', dotsId: 'imageDotsContainer',
