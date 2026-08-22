@@ -141,13 +141,13 @@ document.addEventListener('DOMContentLoaded', () => {
         { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/4.png', title: 'منظر طبيعي 4' },
         { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/5.png', title: 'منظر طبيعي 5' },
         { src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/6.png', title: 'منظر طبيعي 6' },
-        { src: 'assets/images/6.png', title: 'صورة محلية 6' },
+        // { src: 'assets/images/6.png', title: 'صورة محلية 6' },
     ];
 
     const videoItems = [
         { type: 'youtube', videoId: 'y4ETb8WrcuQ', title: 'فيديو يوتيوب 1' },
-        { type: 'youtube', videoId: 'IttOZGG69mo', title: 'فيديو يوتيوب 2' },
-        { type: 'mp4', mp4Src: 'assets/videos/2.mp4', title: 'فيديو محلي 1' },
+       // { type: 'youtube', videoId: 'IttOZGG69mo', title: 'فيديو يوتيوب 2' },
+        // { type: 'mp4', mp4Src: 'assets/videos/2.mp4', title: 'فيديو محلي 1' },
     ];
 
     // ============================================
