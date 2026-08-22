@@ -15,12 +15,12 @@ const mediaItems = [
     },
     {
         type: 'image',
-        src: 'https://picsum.photos/seed/3/1920/1080',
+        src: 'https://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/2.png',
         title: 'منظر طبيعي 3',
     },
     {
         type: 'image',
-        src: 'https://picsum.photos/seed/4/1920/1080',
+        src: 'hhttps://raw.githubusercontent.com/muharraqi55/Capital-Management-and-Salary-Distribution/refs/heads/main/assets/images/3.png',
         title: 'منظر طبيعي 4',
     },
     {
